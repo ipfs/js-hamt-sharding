@@ -53,7 +53,7 @@ class Bucket {
   }
 
   leafCount () {
-    return this._children.reduce((acc, child) => {
+    return this._children.compactArray().reduce((acc, child) => {
       if (child instanceof Bucket) {
         return acc + child.leafCount()
       }

@@ -111,7 +111,7 @@ describe('HAMT', () => {
       // insert enough keys to cause multiple buckets to be created
       await insertKeys(400, bucket)
 
-      expect(bucket.leafCount()).to.eql(22622)
+      expect(bucket.leafCount()).to.eql(400)
     })
 
     it('should count children', async () => {
