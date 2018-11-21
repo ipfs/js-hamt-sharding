@@ -9,7 +9,7 @@ const crypto = require('crypto')
 const ConsumableHash = require('../src/consumable-hash')
 
 describe('HAMT: consumable hash', () => {
-  let hash, h
+  let hash
 
   beforeEach(() => {
     hash = ConsumableHash(hashFn)
@@ -41,7 +41,7 @@ describe('HAMT: consumable hash', () => {
     let iter = 100
     const h = hash('some value')
 
-    while(iter > 0) {
+    while (iter > 0) {
       const result = await h.take(10)
 
       expect(result).to.be.below(1024)
@@ -63,14 +63,14 @@ describe('HAMT: consumable hash', () => {
     const values = []
     const h = hash('some value')
 
-    while(iter > 0) {
+    while (iter > 0) {
       values.push(await h.take(10))
       iter--
     }
 
     h.untake(10 * 100)
 
-    while(iter > 0) {
+    while (iter > 0) {
       const result = h.take(10)
 
       values.push(result)

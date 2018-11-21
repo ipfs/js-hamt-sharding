@@ -7,8 +7,6 @@ const defaultOptions = {
   bits: 8
 }
 
-// TODO: make HAMT a generic NPM package
-
 class Bucket {
   constructor (options, parent, posAtParent) {
     this._options = Object.assign({}, defaultOptions, options)
@@ -75,7 +73,7 @@ class Bucket {
   async * eachLeafSeries () {
     const children = this._children.compactArray()
 
-    for(const child of children) {
+    for (const child of children) {
       if (child instanceof Bucket) {
         for await (const c2 of child.eachLeafSeries()) {
           yield c2
@@ -132,7 +130,7 @@ class Bucket {
     const child = this._children.get(index)
 
     if (child instanceof Bucket) {
-      return await child._findPlace(hashValue)
+      return child._findPlace(hashValue)
     }
 
     return {
@@ -156,7 +154,7 @@ class Bucket {
       const newPlace = await bucket._findPlace(child.hash)
       newPlace.bucket._putAt(newPlace, child.key, child.value)
 
-      return await bucket._findNewBucketAndPos(place.hash)
+      return bucket._findNewBucketAndPos(place.hash)
     }
 
     // no conflict, we found the place
@@ -191,6 +189,7 @@ class Bucket {
       if (this._popCount === 1) {
         // remove myself from parent, replacing me with my only child
         const onlyChild = this._children.find(exists)
+
         if (!(onlyChild instanceof Bucket)) {
           const hash = onlyChild.hash
           hash.untake(this._options.bits)
@@ -226,7 +225,7 @@ function reduceNodes (nodes) {
 async function asyncTransformBucket (bucket, asyncMap, asyncReduce) {
   const output = []
 
-  for(const child of bucket._children.compactArray()) {
+  for (const child of bucket._children.compactArray()) {
     if (child instanceof Bucket) {
       await asyncTransformBucket(child, asyncMap, asyncReduce)
     } else {

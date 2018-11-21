@@ -30,8 +30,8 @@
     "url": "https://github.com/ipfs-shipyard/js-hamt-sharding/issues"
   },
   "engines": {
-    "node": ">=8.0.0",
-    "npm": ">=3.0.0"
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
   },
   "homepage": "https://github.com/ipfs-shipyard/js-hamt-sharding#readme",
   "devDependencies": {

@@ -29,13 +29,13 @@ class InfiniteHash {
   async take (bits) {
     let pendingBits = bits
 
-    while(this._availableBits < pendingBits) {
+    while (this._availableBits < pendingBits) {
       await this._produceMoreBits()
     }
 
     let result = 0
 
-    while(pendingBits > 0) {
+    while (pendingBits > 0) {
       const hash = this._buffers[this._currentBufferIndex]
       const available = Math.min(hash.availableBits(), pendingBits)
       const took = hash.take(available)

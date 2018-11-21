@@ -109,7 +109,7 @@ describe('HAMT', () => {
       expect(bucket.leafCount()).to.eql(0)
 
       // insert enough keys to cause multiple buckets to be created
-      const keys = await insertKeys(400, bucket)
+      await insertKeys(400, bucket)
 
       expect(bucket.leafCount()).to.eql(22622)
     })
@@ -118,7 +118,7 @@ describe('HAMT', () => {
       expect(bucket.leafCount()).to.eql(0)
 
       // insert enough keys to cause multiple buckets to be created
-      const keys = await insertKeys(400, bucket)
+      await insertKeys(400, bucket)
 
       expect(bucket.childrenCount()).to.eql(256)
     })
@@ -134,9 +134,9 @@ describe('HAMT', () => {
       let childCount = 0
 
       // insert enough keys to cause multiple buckets to be created
-      const keys = await insertKeys(expectedCount, bucket)
+      await insertKeys(expectedCount, bucket)
 
-      for await (const child of bucket.eachLeafSeries()) {
+      for await (const child of bucket.eachLeafSeries()) { // eslint-disable-line no-unused-vars
         childCount++
       }
 
