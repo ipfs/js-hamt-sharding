@@ -23,6 +23,19 @@
 - [Usage](#usage)
   - [Example](#example)
   - [API](#api)
+    - [`bucket.put(key, value)`](#bucketputkey-value)
+    - [`bucket.get(key)`](#bucketgetkey)
+    - [`bucket.del(key)`](#bucketdelkey)
+    - [`bucket.leafCount()`](#bucketleafcount)
+    - [`bucket.childrenCount()`](#bucketchildrencount)
+    - [`bucket.onlyChild()`](#bucketonlychild)
+    - [`bucket.eachLeafSeries()`](#bucketeachleafseries)
+    - [`bucket.serialize(map, reduce)`](#bucketserializemap-reduce)
+    - [`bucket.asyncTransform(asyncMap, asyncReduce)`](#bucketasynctransformasyncmap-asyncreduce)
+    - [`bucket.toJSON()`](#buckettojson)
+    - [`bucket.prettyPrint()`](#bucketprettyprint)
+    - [`bucket.tableSize()`](#buckettablesize)
+    - [`hamt.isBucket(other)`](#hamtisbucketother)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -65,12 +78,77 @@ const hamt = require('hamt-sharding')
 ```
 
 ### `bucket.put(key, value)`
+
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+await bucket.put('key', 'value')
+```
+
 ### `bucket.get(key)`
+
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+await bucket.put('key', 'value')
+
+console.info(await bucket.get('key')) // 'value'
+```
+
 ### `bucket.del(key)`
+
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+await bucket.put('key', 'value')
+await bucket.del('key', 'value')
+
+console.info(await bucket.get('key')) // undefined
+```
+
 ### `bucket.leafCount()`
+
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+console.info(bucket.leafCount()) // 0
+
+await bucket.put('key', 'value')
+
+console.info(bucket.leafCount()) // 1
+```
+
 ### `bucket.childrenCount()`
+
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+console.info(bucket.childrenCount()) // 0
+
+await bucket.put('key', 'value')
+
+console.info(bucket.childrenCount()) // 234 -- dependent on hashing algorithm
+```
+
 ### `bucket.onlyChild()`
 ### `bucket.eachLeafSeries()`
+
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+await bucket.put('key', 'value')
+
+for await (const child of bucket.eachLeafSeries()) {
+  console.info(child.value) // 'value'
+}
+```
+
 ### `bucket.serialize(map, reduce)`
 ### `bucket.asyncTransform(asyncMap, asyncReduce)`
 ### `bucket.toJSON()`
