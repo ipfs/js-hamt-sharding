@@ -4,7 +4,7 @@
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Jenkins](https://ci.ipfs.team/buildStatus/icon?job=ipfs-shipyard/js-hamt-sharding/master)](https://ci.ipfs.team/job/ipfs/job/js-hamt-sharding/job/master/)
+[![Jenkins](https://ci.ipfs.team/buildStatus/icon?job=IPFS%20Shipyard/js-hamt-sharding/master)](https://ci.ipfs.team/job/IPFS%20Shipyard/job/js-hamt-sharding/job/master/)
 [![Codecov](https://codecov.io/gh/ipfs-shipyard/js-hamt-sharding/branch/master/graph/badge.svg)](https://codecov.io/gh/ipfs/js-hamt-sharding)
 [![Dependency Status](https://david-dm.org/ipfs-shipyard/js-hamt-sharding.svg?style=flat-square)](https://david-dm.org/ipfs/js-hamt-sharding)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
