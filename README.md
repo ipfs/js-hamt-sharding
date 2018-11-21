@@ -156,6 +156,14 @@ for await (const child of bucket.eachLeafSeries()) {
 ### `bucket.tableSize()`
 ### `hamt.isBucket(other)`
 
+```javascript
+const hamt = require('hamt-sharding')
+const bucket = hamt({...})
+
+console.info(hamt.isBucket(bucket)) // true
+console.info(hamt.isBucket(true)) // false
+```
+
 ## Contribute
 
 Feel free to join in. All welcome. Open an [issue](https://github.com/ipfs-shipyard/js-hamt-sharding/issues)!
