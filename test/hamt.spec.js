@@ -5,16 +5,14 @@ const chai = require('chai')
 chai.use(require('dirty-chai'))
 const expect = chai.expect
 const crypto = require('crypto')
-const each = require('async/each')
-const eachSeries = require('async/eachSeries')
 
 const HAMT = require('..')
 
 const hashFn = function (value, callback) {
-  callback(null, crypto
+  return crypto
     .createHash('sha256')
     .update(value)
-    .digest())
+    .digest()
 }
 
 const options = {
@@ -24,167 +22,204 @@ const options = {
 describe('HAMT', () => {
   describe('basic', () => {
     let bucket
-    it('can create an empty one', () => {
+
+    beforeEach(() => {
       bucket = HAMT(options)
     })
 
-    it('get unknown key returns undefined', (callback) => {
-      bucket.get('unknown', (err, result) => {
-        expect(err).to.not.exist()
-        expect(result).to.be.undefined()
-        callback()
-      })
+    it('should require a hash function', () => {
+      try {
+        HAMT()
+
+        throw new Error('Should have required a hash function')
+      } catch (err) {
+        expect(err.message).to.include('please define an options.hashFn')
+      }
     })
 
-    it('can put a value', (callback) => {
-      bucket.put('key', 'value', callback)
+    it('should require a hash function with options', () => {
+      try {
+        HAMT({})
+
+        throw new Error('Should have required a hash function')
+      } catch (err) {
+        expect(err.message).to.include('please define an options.hashFn')
+      }
     })
 
-    it('can get that value', (callback) => {
-      bucket.get('key', (err, result) => {
-        expect(err).to.not.exist()
-        expect(result).to.eql('value')
-        callback()
-      })
+    it('should recognise a bucket as a bucket', () => {
+      expect(HAMT.isBucket(bucket)).to.be.true()
     })
 
-    it('can override a value', (callback) => {
-      bucket.put('key', 'a different value', callback)
+    it('get unknown key returns undefined', async () => {
+      const result = await bucket.get('unknown')
+
+      expect(result).to.be.undefined()
     })
 
-    it('can get that value', (callback) => {
-      bucket.get('key', (err, result) => {
-        expect(err).to.not.exist()
-        expect(result).to.eql('a different value')
-        callback()
-      })
+    it('can get and put a value', async () => {
+      const key = 'key'
+      const value = 'value'
+
+      await bucket.put(key, value)
+
+      const result = await bucket.get(key)
+
+      expect(result).to.eql(value)
     })
 
-    it('can remove a non existing value', (callback) => {
-      bucket.del('a key which does not exist', callback)
+    it('can override a value', async () => {
+      const key = 'key'
+      const value = 'value'
+      const secondValue = 'other value'
+
+      await bucket.put(key, value)
+      await bucket.put(key, secondValue)
+
+      const result = await bucket.get(key)
+
+      expect(result).to.eql(secondValue)
     })
 
-    it('can remove an existing value', (callback) => {
-      bucket.del('key', callback)
+    it('can remove a non existing value', async () => {
+      bucket.del('a key which does not exist')
     })
 
-    it('get deleted key returns undefined', (callback) => {
-      bucket.get('key', (err, result) => {
-        expect(err).to.not.exist()
-        expect(result).to.be.undefined()
-        callback()
-      })
+    it('can remove an existing value', async () => {
+      const key = 'key'
+      const value = 'value'
+
+      await bucket.put(key, value)
+      await bucket.del('key')
+    })
+
+    it('get deleted key returns undefined', async () => {
+      const key = 'key'
+      const value = 'value'
+
+      await bucket.put(key, value)
+      await bucket.del('key')
+
+      const result = await bucket.get(key)
+
+      expect(result).to.be.undefined()
+    })
+
+    it('should count leaves', async () => {
+      expect(bucket.leafCount()).to.eql(0)
+
+      // insert enough keys to cause multiple buckets to be created
+      const keys = await insertKeys(400, bucket)
+
+      expect(bucket.leafCount()).to.eql(22622)
+    })
+
+    it('should count children', async () => {
+      expect(bucket.leafCount()).to.eql(0)
+
+      // insert enough keys to cause multiple buckets to be created
+      const keys = await insertKeys(400, bucket)
+
+      expect(bucket.childrenCount()).to.eql(256)
+    })
+
+    it('should return the first child', async () => {
+      expect(bucket.leafCount()).to.eql(0)
+
+      expect(await bucket.onlyChild()).to.be.undefined()
+    })
+
+    it('should iterate over children', async () => {
+      let expectedCount = 400
+      let childCount = 0
+
+      // insert enough keys to cause multiple buckets to be created
+      const keys = await insertKeys(expectedCount, bucket)
+
+      for await (const child of bucket.eachLeafSeries()) {
+        childCount++
+      }
+
+      expect(childCount).to.equal(expectedCount)
     })
   })
 
   describe('many keys', () => {
     let bucket
-    let keys
-    let masterHead
 
-    it('can create an empty one', () => {
+    beforeEach(() => {
       bucket = HAMT(options)
     })
 
-    it('accepts putting many keys', (done) => {
-      const max = 400
-      keys = new Array(max)
-      for (let i = 1; i <= max; i++) {
-        keys[i - 1] = i.toString()
-      }
+    it('accepts putting many keys', async () => {
+      const keys = Array.from({ length: 400 }, (_, i) => i.toString())
 
-      each(keys, (key, callback) => bucket.put(key, key, callback), done)
+      for (const key of keys) {
+        await bucket.put(key, key)
+      }
     })
 
-    it('can remove all the keys and still find remaining', function (done) {
+    it('accepts putting many keys in parallel', async () => {
+      const keys = Array.from({ length: 400 }, (_, i) => i.toString())
+
+      await Promise.all(keys.map(key => bucket.put(key, key)))
+    })
+
+    it('can remove all the keys and still find remaining', async function () {
       this.timeout(50 * 1000)
 
-      masterHead = keys.pop()
-      iterate()
+      const keys = await insertKeys(400, bucket)
 
-      function iterate () {
-        const head = keys.shift()
-        if (!head) {
-          done()
-          return // early
-        }
+      const masterHead = keys.pop()
 
-        bucket.get(head, (err, value) => {
-          expect(err).to.not.exist()
-          expect(value).to.eql(head)
-          bucket.del(head, afterDel)
-        })
+      for (const head of keys.reverse()) {
+        expect(await bucket.get(head)).to.eql(head)
 
-        function afterDel (err) {
-          expect(err).to.not.exist()
-          bucket.get(head, afterGet)
-        }
+        await bucket.del(head)
 
-        function afterGet (err, value) {
-          expect(err).to.not.exist()
-          expect(value).to.be.undefined()
-
-          each(keys, onEachKey, reiterate)
-        }
+        expect(await bucket.get(head)).to.be.undefined()
       }
 
-      function onEachKey (key, callback) {
-        bucket.get(key, (err, value) => {
-          expect(err).to.not.exist()
-          expect(value).to.eql(key)
-          callback()
-        })
-      }
-
-      function reiterate (err) {
-        expect(err).to.not.exist()
-        // break from stack on next iteration
-        process.nextTick(iterate)
-      }
-    })
-
-    it('collapsed all the buckets', () => {
+      // collapsed all the buckets
       expect(bucket.toJSON()).to.be.eql([masterHead])
-    })
 
-    it('can still find sole head', (callback) => {
-      bucket.get(masterHead, (err, value) => {
-        expect(err).to.not.exist()
-        expect(value).to.be.eql(masterHead)
-        callback()
-      })
+      // can still find sole head
+      const value = await bucket.get(masterHead)
+
+      expect(value).to.be.eql(masterHead)
     })
   })
 
   describe('exhausting hash', () => {
     let bucket
 
-    before(() => {
+    beforeEach(() => {
       bucket = HAMT({
         hashFn: smallHashFn,
         bits: 2
       })
     })
 
-    it('iterates', (callback) => {
-      const size = 300
-      const keys = Array(size)
-      for (let i = 0; i < size; i++) {
-        keys[i] = i.toString()
-      }
-
-      eachSeries(keys, (key, callback) => bucket.put(key, key, callback), (err) => {
-        expect(err).to.not.exist()
-        callback()
-      })
+    it('iterates', async () => {
+      await insertKeys(400, bucket)
     })
 
-    function smallHashFn (value, callback) {
-      callback(null, crypto
+    function smallHashFn (value) {
+      return crypto
         .createHash('sha256')
         .update(value)
         .digest()
-        .slice(0, 2)) // just return the 2 first bytes of the hash
+        .slice(0, 2) // just return the 2 first bytes of the hash
     }
   })
 })
+
+async function insertKeys (count, bucket) {
+  const keys = Array.from({ length: count }, (_, i) => i.toString())
+
+  for (const key of keys) {
+    await bucket.put(key, key)
+  }
+
+  return keys
+}

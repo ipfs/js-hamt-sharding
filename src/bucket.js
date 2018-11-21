@@ -1,8 +1,6 @@
 'use strict'
 
 const SparseArray = require('sparse-array')
-const map = require('async/map')
-const eachSeries = require('async/eachSeries')
 const wrapHash = require('./consumable-hash')
 
 const defaultOptions = {
@@ -33,47 +31,35 @@ class Bucket {
     return o instanceof Bucket
   }
 
-  put (key, value, callback) {
-    this._findNewBucketAndPos(key, (err, place) => {
-      if (err) {
-        callback(err)
-        return // early
-      }
+  async put (key, value) {
+    const place = await this._findNewBucketAndPos(key)
 
-      place.bucket._putAt(place, key, value)
-      callback()
-    })
+    await place.bucket._putAt(place, key, value)
   }
 
-  get (key, callback) {
-    this._findChild(key, (err, child) => {
-      if (err) {
-        callback(err)
-      } else {
-        callback(null, child && child.value)
-      }
-    })
+  async get (key) {
+    const child = await this._findChild(key)
+
+    if (child) {
+      return child.value
+    }
   }
 
-  del (key, callback) {
-    this._findPlace(key, (err, place) => {
-      if (err) {
-        callback(err)
-        return // early
-      }
-      const child = place.bucket._at(place.pos)
-      if (child && child.key === key) {
-        place.bucket._delAt(place.pos)
-      }
-      callback(null)
-    })
+  async del (key) {
+    const place = await this._findPlace(key)
+    const child = place.bucket._at(place.pos)
+
+    if (child && child.key === key) {
+      place.bucket._delAt(place.pos)
+    }
   }
 
   leafCount () {
-    this._children.reduce((acc, child) => {
+    return this._children.reduce((acc, child) => {
       if (child instanceof Bucket) {
         return acc + child.leafCount()
       }
+
       return acc + 1
     }, 0)
   }
@@ -82,21 +68,22 @@ class Bucket {
     return this._children.length
   }
 
-  onlyChild (callback) {
-    process.nextTick(() => callback(null, this._children.get(0)))
+  onlyChild () {
+    return this._children.get(0)
   }
 
-  eachLeafSeries (iterator, callback) {
-    eachSeries(
-      this._children.compactArray(),
-      (child, cb) => {
-        if (child instanceof Bucket) {
-          child.eachLeafSeries(iterator, cb)
-        } else {
-          iterator(child.key, child.value, cb)
+  async * eachLeafSeries () {
+    const children = this._children.compactArray()
+
+    for(const child of children) {
+      if (child instanceof Bucket) {
+        for await (const c2 of child.eachLeafSeries()) {
+          yield c2
         }
-      },
-      callback)
+      } else {
+        yield child
+      }
+    }
   }
 
   serialize (map, reduce) {
@@ -129,72 +116,51 @@ class Bucket {
     return Math.pow(2, this._options.bits)
   }
 
-  _findChild (key, callback) {
-    this._findPlace(key, (err, result) => {
-      if (err) {
-        callback(err)
-        return // early
-      }
+  async _findChild (key) {
+    const result = await this._findPlace(key)
+    const child = result.bucket._at(result.pos)
 
-      const child = result.bucket._at(result.pos)
-      if (child && child.key === key) {
-        callback(null, child)
-      } else {
-        callback(null, undefined)
-      }
-    })
+    if (child && child.key === key) {
+      return child
+    }
   }
 
-  _findPlace (key, callback) {
+  async _findPlace (key) {
     const hashValue = this._options.hash(key)
-    hashValue.take(this._options.bits, (err, index) => {
-      if (err) {
-        callback(err)
-        return // early
-      }
+    const index = await hashValue.take(this._options.bits)
 
-      const child = this._children.get(index)
-      if (child instanceof Bucket) {
-        child._findPlace(hashValue, callback)
-      } else {
-        const place = {
-          bucket: this,
-          pos: index,
-          hash: hashValue
-        }
-        callback(null, place)
-      }
-    })
+    const child = this._children.get(index)
+
+    if (child instanceof Bucket) {
+      return await child._findPlace(hashValue)
+    }
+
+    return {
+      bucket: this,
+      pos: index,
+      hash: hashValue
+    }
   }
 
-  _findNewBucketAndPos (key, callback) {
-    this._findPlace(key, (err, place) => {
-      if (err) {
-        callback(err)
-        return // early
-      }
-      const child = place.bucket._at(place.pos)
-      if (child && child.key !== key) {
-        // conflict
+  async _findNewBucketAndPos (key) {
+    const place = await this._findPlace(key)
+    const child = place.bucket._at(place.pos)
 
-        const bucket = new Bucket(this._options, place.bucket, place.pos)
-        place.bucket._putObjectAt(place.pos, bucket)
+    if (child && child.key !== key) {
+      // conflict
 
-        // put the previous value
-        bucket._findPlace(child.hash, (err, newPlace) => {
-          if (err) {
-            callback(err)
-            return // early
-          }
+      const bucket = new Bucket(this._options, place.bucket, place.pos)
+      place.bucket._putObjectAt(place.pos, bucket)
 
-          newPlace.bucket._putAt(newPlace, child.key, child.value)
-          bucket._findNewBucketAndPos(place.hash, callback)
-        })
-      } else {
-        // no conflict, we found the place
-        callback(null, place)
-      }
-    })
+      // put the previous value
+      const newPlace = await bucket._findPlace(child.hash)
+      newPlace.bucket._putAt(newPlace, child.key, child.value)
+
+      return await bucket._findNewBucketAndPos(place.hash)
+    }
+
+    // no conflict, we found the place
+    return place
   }
 
   _putAt (place, key, value) {
@@ -257,33 +223,23 @@ function reduceNodes (nodes) {
   return nodes
 }
 
-function asyncTransformBucket (bucket, asyncMap, asyncReduce, callback) {
-  map(
-    bucket._children.compactArray(),
-    (child, callback) => {
-      if (child instanceof Bucket) {
-        asyncTransformBucket(child, asyncMap, asyncReduce, callback)
-      } else {
-        asyncMap(child, (err, mappedChildren) => {
-          if (err) {
-            callback(err)
-          } else {
-            callback(null, {
-              bitField: bucket._children.bitField(),
-              children: mappedChildren
-            })
-          }
-        })
-      }
-    },
-    (err, mappedChildren) => {
-      if (err) {
-        callback(err)
-      } else {
-        asyncReduce(mappedChildren, callback)
-      }
+async function asyncTransformBucket (bucket, asyncMap, asyncReduce) {
+  const output = []
+
+  for(const child of bucket._children.compactArray()) {
+    if (child instanceof Bucket) {
+      await asyncTransformBucket(child, asyncMap, asyncReduce)
+    } else {
+      const mappedChildren = await asyncMap(child)
+
+      output.push({
+        bitField: bucket._children.bitField(),
+        children: mappedChildren
+      })
     }
-  )
+
+    return asyncReduce(output)
+  }
 }
 
 module.exports = Bucket

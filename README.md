@@ -39,7 +39,7 @@
 const hamt = require('hamt-sharding')
 const crypto = require('crypto-promise')
 
-// decide how to hash things
+// decide how to hash things, can return a Promise
 const hashFn = async (value) => {
   return crypto
     .createHash('sha256')

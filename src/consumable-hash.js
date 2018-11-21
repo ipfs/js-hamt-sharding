@@ -1,6 +1,5 @@
 'use strict'
 
-const whilst = require('async/whilst')
 const ConsumableBuffer = require('./consumable-buffer')
 
 module.exports = function wrapHash (hashFn) {
@@ -27,57 +26,41 @@ class InfiniteHash {
     this._buffers = []
   }
 
-  take (bits, callback) {
+  async take (bits) {
     let pendingBits = bits
-    whilst(
-      () => this._availableBits < pendingBits,
-      (callback) => {
-        this._produceMoreBits(callback)
-      },
-      (err) => {
-        if (err) {
-          callback(err)
-          return // early
-        }
 
-        let result = 0
+    while(this._availableBits < pendingBits) {
+      await this._produceMoreBits()
+    }
 
-        // TODO: this is sync, no need to use whilst
-        whilst(
-          () => pendingBits > 0,
-          (callback) => {
-            const hash = this._buffers[this._currentBufferIndex]
-            const available = Math.min(hash.availableBits(), pendingBits)
-            const took = hash.take(available)
-            result = (result << available) + took
-            pendingBits -= available
-            this._availableBits -= available
-            if (hash.availableBits() === 0) {
-              this._currentBufferIndex++
-            }
-            callback()
-          },
-          (err) => {
-            if (err) {
-              callback(err)
-              return // early
-            }
+    let result = 0
 
-            process.nextTick(() => callback(null, result))
-          }
-        )
+    while(pendingBits > 0) {
+      const hash = this._buffers[this._currentBufferIndex]
+      const available = Math.min(hash.availableBits(), pendingBits)
+      const took = hash.take(available)
+      result = (result << available) + took
+      pendingBits -= available
+      this._availableBits -= available
+
+      if (hash.availableBits() === 0) {
+        this._currentBufferIndex++
       }
-    )
+    }
+
+    return result
   }
 
   untake (bits) {
     let pendingBits = bits
+
     while (pendingBits > 0) {
       const hash = this._buffers[this._currentBufferIndex]
       const availableForUntake = Math.min(hash.totalBits() - hash.availableBits(), pendingBits)
       hash.untake(availableForUntake)
       pendingBits -= availableForUntake
       this._availableBits += availableForUntake
+
       if (this._currentBufferIndex > 0 && hash.totalBits() === hash.availableBits()) {
         this._depth--
         this._currentBufferIndex--
@@ -85,19 +68,14 @@ class InfiniteHash {
     }
   }
 
-  _produceMoreBits (callback) {
+  async _produceMoreBits () {
     this._depth++
-    const value = this._depth ? this._value + this._depth : this._value
-    this._hashFn(value, (err, hashValue) => {
-      if (err) {
-        callback(err)
-        return // early
-      }
 
-      const buffer = new ConsumableBuffer(hashValue)
-      this._buffers.push(buffer)
-      this._availableBits += buffer.availableBits()
-      callback()
-    })
+    const value = this._depth ? this._value + this._depth : this._value
+    const hashValue = await this._hashFn(value)
+    const buffer = new ConsumableBuffer(hashValue)
+
+    this._buffers.push(buffer)
+    this._availableBits += buffer.availableBits()
   }
 }
