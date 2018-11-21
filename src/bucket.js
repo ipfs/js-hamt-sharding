@@ -98,8 +98,8 @@ class Bucket {
     }, []))
   }
 
-  asyncTransform (asyncMap, asyncReduce, callback) {
-    asyncTransformBucket(this, asyncMap, asyncReduce, callback)
+  async asyncTransform (asyncMap, asyncReduce) {
+    return asyncTransformBucket(this, asyncMap, asyncReduce)
   }
 
   toJSON () {

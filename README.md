@@ -22,6 +22,7 @@
 - [Install](#install)
 - [Usage](#usage)
   - [Example](#example)
+  - [API](#api)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -56,6 +57,26 @@ await bucket.put('key', 'value')
 const output = await bucket.get('key')
 // output === 'value'
 ```
+
+## API
+
+```javascript
+const hamt = require('hamt-sharding')
+```
+
+### `bucket.put(key, value)`
+### `bucket.get(key)`
+### `bucket.del(key)`
+### `bucket.leafCount()`
+### `bucket.childrenCount()`
+### `bucket.onlyChild()`
+### `bucket.eachLeafSeries()`
+### `bucket.serialize(map, reduce)`
+### `bucket.asyncTransform(asyncMap, asyncReduce)`
+### `bucket.toJSON()`
+### `bucket.prettyPrint()`
+### `bucket.tableSize()`
+### `hamt.isBucket(other)`
 
 ## Contribute
 
