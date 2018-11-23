@@ -70,12 +70,12 @@ class Bucket {
     return this._children.get(0)
   }
 
-  async * eachLeafSeries () {
+  * eachLeafSeries () {
     const children = this._children.compactArray()
 
     for (const child of children) {
       if (child instanceof Bucket) {
-        for await (const c2 of child.eachLeafSeries()) {
+        for (const c2 of child.eachLeafSeries()) {
           yield c2
         }
       } else {
