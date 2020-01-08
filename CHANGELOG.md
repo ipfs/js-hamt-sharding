@@ -1,3 +1,13 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v0.0.2...v1.0.0) (2020-01-08)
+
+
+### Bug Fixes
+
+* linting ([83e6192](https://github.com/ipfs-shipyard/js-hamt-sharding/commit/83e6192))
+
+
+
 ## 0.0.2 (2018-11-23)
 
 
