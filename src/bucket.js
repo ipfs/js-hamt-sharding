@@ -98,7 +98,7 @@ class Bucket {
     }, []))
   }
 
-  async asyncTransform (asyncMap, asyncReduce) {
+  asyncTransform (asyncMap, asyncReduce) {
     return asyncTransformBucket(this, asyncMap, asyncReduce)
   }
 

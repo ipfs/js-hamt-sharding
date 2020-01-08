@@ -82,7 +82,7 @@ describe('HAMT', () => {
     })
 
     it('can remove a non existing value', async () => {
-      bucket.del('a key which does not exist')
+      await bucket.del('a key which does not exist')
     })
 
     it('can remove an existing value', async () => {
@@ -130,7 +130,7 @@ describe('HAMT', () => {
     })
 
     it('should iterate over children', async () => {
-      let expectedCount = 400
+      const expectedCount = 400
       let childCount = 0
 
       // insert enough keys to cause multiple buckets to be created
