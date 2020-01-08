@@ -1,6 +1,6 @@
 {
   "name": "hamt-sharding",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "JavaScript implementation of sharding using hash array mapped tries",
   "leadMaintainer": "Alex Potsides <alex.potsides@protocol.ai>",
   "main": "src/index.js",
