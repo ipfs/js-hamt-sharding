@@ -38,7 +38,6 @@
     - [`bucket.toJSON()`](#buckettojson)
     - [`bucket.prettyPrint()`](#bucketprettyprint)
     - [`bucket.tableSize()`](#buckettablesize)
-    - [`hamt.isBucket(other)`](#hamtisbucketother)
   - [Contribute](#contribute)
   - [License](#license)
 
@@ -157,15 +156,6 @@ for await (const child of bucket.eachLeafSeries()) {
 ### `bucket.toJSON()`
 ### `bucket.prettyPrint()`
 ### `bucket.tableSize()`
-### `hamt.isBucket(other)`
-
-```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
-
-console.info(hamt.isBucket(bucket)) // true
-console.info(hamt.isBucket(true)) // false
-```
 
 ## Contribute
 

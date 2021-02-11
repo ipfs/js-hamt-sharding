@@ -8,9 +8,6 @@ const multihashing = require('multihashing-async')
 const uint8ArrayFromString = require('uint8arrays/from-string')
 
 const createHamt = require('..')
-const {
-  isBucket
-} = createHamt
 
 /**
  * @template T
@@ -60,10 +57,6 @@ describe('HAMT', () => {
       } catch (err) {
         expect(err.message).to.include('please define an options.hashFn')
       }
-    })
-
-    it('should recognise a bucket as a bucket', () => {
-      expect(isBucket(bucket)).to.be.true()
     })
 
     it('get unknown key returns undefined', async () => {

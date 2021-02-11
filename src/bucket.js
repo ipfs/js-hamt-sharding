@@ -69,13 +69,6 @@ class Bucket {
   }
 
   /**
-   * @param {any} o
-   */
-  static isBucket (o) {
-    return o instanceof Bucket
-  }
-
-  /**
    * @param {string} key
    * @param {T} value
    */

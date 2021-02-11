@@ -12,7 +12,7 @@ const wrapHash = require('./consumable-hash')
 /**
  * @param {UserBucketOptions} options
  */
-module.exports = function createHAMT (options) {
+function createBucket (options) {
   if (!options || !options.hashFn) {
     throw new Error('please define an options.hashFn')
   }
@@ -25,5 +25,6 @@ module.exports = function createHAMT (options) {
   return new Bucket(bucketOptions)
 }
 
-module.exports.isBucket = Bucket.isBucket
-module.exports.Bucket = Bucket
+module.exports = {
+  createBucket
+}
