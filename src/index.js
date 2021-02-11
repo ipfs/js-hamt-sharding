@@ -5,14 +5,14 @@ const wrapHash = require('./consumable-hash')
 
 /**
  * @typedef {object} UserBucketOptions
- * @property {(value: string | Uint8Array) => Promise<Uint8Array>} hashFn
+ * @property {(value: Uint8Array) => Promise<Uint8Array>} hashFn
  * @property {number} [bits=8]
  */
 
 /**
  * @param {UserBucketOptions} options
  */
-function createBucket (options) {
+function createHAMT (options) {
   if (!options || !options.hashFn) {
     throw new Error('please define an options.hashFn')
   }
@@ -26,5 +26,6 @@ function createBucket (options) {
 }
 
 module.exports = {
-  createBucket
+  createHAMT,
+  Bucket
 }

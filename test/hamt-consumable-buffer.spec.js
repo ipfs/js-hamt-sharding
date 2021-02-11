@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
+const { expect } = require('aegir/utils/chai')
 
 const ConsumableBuffer = require('../src/consumable-buffer')
 

@@ -2,14 +2,13 @@
 
 const ConsumableBuffer = require('./consumable-buffer')
 const uint8ArrayConcat = require('uint8arrays/concat')
-const uint8ArrayFromString = require('uint8arrays/from-string')
 
 /**
- * @param {(value: string | Uint8Array) => Promise<Uint8Array>} hashFn
+ * @param {(value: Uint8Array) => Promise<Uint8Array>} hashFn
  */
 function wrapHash (hashFn) {
   /**
-   * @param {InfiniteHash | Uint8Array | string} value
+   * @param {InfiniteHash | Uint8Array} value
    */
   function hashing (value) {
     if (value instanceof InfiniteHash) {
@@ -26,18 +25,15 @@ function wrapHash (hashFn) {
 class InfiniteHash {
   /**
    *
-   * @param {string | Uint8Array} value
-   * @param {(value: string | Uint8Array) => Promise<Uint8Array>} hashFn
+   * @param {Uint8Array} value
+   * @param {(value: Uint8Array) => Promise<Uint8Array>} hashFn
    */
   constructor (value, hashFn) {
-    if (value instanceof Uint8Array) {
-      this._value = value
-    } else if (typeof value === 'string') {
-      this._value = uint8ArrayFromString(value)
-    } else {
-      throw new Error('can only hash strings or buffers')
+    if (!(value instanceof Uint8Array)) {
+      throw new Error('can only hash Uint8Arrays')
     }
 
+    this._value = value
     this._hashFn = hashFn
     this._depth = -1
     this._availableBits = 0

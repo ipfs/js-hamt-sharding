@@ -52,18 +52,18 @@
 ### Example
 
 ```javascript
-const hamt = require('hamt-sharding')
+const { createHAMT } = require('hamt-sharding')
 const crypto = require('crypto-promise')
 
-// decide how to hash things, can return a Promise
-const hashFn = async (value) => {
+// decide how to hash buffers made from keys, can return a Promise
+const hashFn = async (buf) => {
   return crypto
     .createHash('sha256')
-    .update(value)
+    .update(buf)
     .digest()
 }
 
-const bucket = hamt({
+const bucket = createHAMT({
   hashFn: hashFn
 })
 
@@ -76,14 +76,14 @@ const output = await bucket.get('key')
 ## API
 
 ```javascript
-const hamt = require('hamt-sharding')
+const { createHAMT } = require('hamt-sharding')
 ```
 
 ### `bucket.put(key, value)`
 
 ```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
+const { createHAMT } = require('hamt-sharding')
+const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
 ```
@@ -91,8 +91,8 @@ await bucket.put('key', 'value')
 ### `bucket.get(key)`
 
 ```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
+const { createHAMT } = require('hamt-sharding')
+const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
 
@@ -102,8 +102,8 @@ console.info(await bucket.get('key')) // 'value'
 ### `bucket.del(key)`
 
 ```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
+const { createHAMT } = require('hamt-sharding')
+const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
 await bucket.del('key', 'value')
@@ -114,8 +114,8 @@ console.info(await bucket.get('key')) // undefined
 ### `bucket.leafCount()`
 
 ```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
+const { createHAMT } = require('hamt-sharding')
+const bucket = createHAMT({...})
 
 console.info(bucket.leafCount()) // 0
 
@@ -127,8 +127,8 @@ console.info(bucket.leafCount()) // 1
 ### `bucket.childrenCount()`
 
 ```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
+const { createHAMT } = require('hamt-sharding')
+const bucket = createHAMT({...})
 
 console.info(bucket.childrenCount()) // 0
 
@@ -141,8 +141,8 @@ console.info(bucket.childrenCount()) // 234 -- dependent on hashing algorithm
 ### `bucket.eachLeafSeries()`
 
 ```javascript
-const hamt = require('hamt-sharding')
-const bucket = hamt({...})
+const { createHAMT } = require('hamt-sharding')
+const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
 

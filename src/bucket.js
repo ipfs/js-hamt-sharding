@@ -2,6 +2,7 @@
 
 // @ts-ignore
 const SparseArray = require('sparse-array')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
 /**
  * @typedef {import('./consumable-hash').InfiniteHash} InfiniteHash
@@ -43,7 +44,7 @@ const SparseArray = require('sparse-array')
 /**
  * @typedef {object} BucketOptions
  * @property {number} bits
- * @property {(value: string | Uint8Array | InfiniteHash) => InfiniteHash} hash
+ * @property {(value: Uint8Array | InfiniteHash) => InfiniteHash} hash
  */
 
 /**
@@ -204,11 +205,11 @@ class Bucket {
   }
 
   /**
-   * @param {string | Uint8Array | InfiniteHash} key
+   * @param {string | InfiniteHash} key
    * @returns {Promise<BucketPosition<T>>}
    */
   async _findPlace (key) {
-    const hashValue = this._options.hash(key)
+    const hashValue = this._options.hash(typeof key === 'string' ? uint8ArrayFromString(key) : key)
     const index = await hashValue.take(this._options.bits)
 
     const child = this._children.get(index)
@@ -226,7 +227,7 @@ class Bucket {
   }
 
   /**
-   * @param {string | Uint8Array | InfiniteHash} key
+   * @param {string | InfiniteHash} key
    * @returns {Promise<BucketPosition<T>>}
    */
   async _findNewBucketAndPos (key) {

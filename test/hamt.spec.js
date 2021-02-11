@@ -1,13 +1,11 @@
 /* eslint-env mocha */
 'use strict'
 
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const expect = chai.expect
+const { expect } = require('aegir/utils/chai')
 const multihashing = require('multihashing-async')
 const uint8ArrayFromString = require('uint8arrays/from-string')
 
-const createHamt = require('..')
+const { createHAMT } = require('..')
 
 /**
  * @template T
@@ -34,13 +32,13 @@ describe('HAMT', () => {
     let bucket
 
     beforeEach(() => {
-      bucket = createHamt(options)
+      bucket = createHAMT(options)
     })
 
     it('should require a hash function', () => {
       try {
         // @ts-ignore options are not optional
-        createHamt()
+        createHAMT()
 
         throw new Error('Should have required a hash function')
       } catch (err) {
@@ -51,7 +49,7 @@ describe('HAMT', () => {
     it('should require a hash function with options', () => {
       try {
         // @ts-ignore hashFn is required
-        createHamt({})
+        createHAMT({})
 
         throw new Error('Should have required a hash function')
       } catch (err) {
@@ -157,7 +155,7 @@ describe('HAMT', () => {
     let bucket
 
     beforeEach(() => {
-      bucket = createHamt(options)
+      bucket = createHAMT(options)
     })
 
     it('accepts putting many keys', async () => {
@@ -208,7 +206,7 @@ describe('HAMT', () => {
     let bucket
 
     beforeEach(() => {
-      bucket = createHamt({
+      bucket = createHAMT({
         hashFn: smallHashFn,
         bits: 2
       })

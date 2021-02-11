@@ -33,8 +33,6 @@
   "homepage": "https://github.com/ipfs-shipyard/js-hamt-sharding#readme",
   "devDependencies": {
     "aegir": "^30.3.0",
-    "chai": "^4.2.0",
-    "dirty-chai": "^2.0.1",
     "multihashing-async": "^2.1.0"
   },
   "dependencies": {
