@@ -33,7 +33,7 @@ const SparseArray = require('sparse-array')
 /**
  * @template T
  *
- * @typedef {object} BucketPlace<T>
+ * @typedef {object} BucketPosition<T>
  * @property {Bucket<T>} bucket
  * @property {number} pos
  * @property {InfiniteHash} hash
@@ -212,7 +212,7 @@ class Bucket {
 
   /**
    * @param {string | Uint8Array | InfiniteHash} key
-   * @returns {Promise<BucketPlace<T>>}
+   * @returns {Promise<BucketPosition<T>>}
    */
   async _findPlace (key) {
     const hashValue = this._options.hash(key)
@@ -234,7 +234,7 @@ class Bucket {
 
   /**
    * @param {string | Uint8Array | InfiniteHash} key
-   * @returns {Promise<BucketPlace<T>>}
+   * @returns {Promise<BucketPosition<T>>}
    */
   async _findNewBucketAndPos (key) {
     const place = await this._findPlace(key)
@@ -256,7 +256,7 @@ class Bucket {
   }
 
   /**
-   * @param {BucketPlace<T>} place
+   * @param {BucketPosition<T>} place
    * @param {string} key
    * @param {T} value
    */

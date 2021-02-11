@@ -43,5 +43,6 @@
   },
   "contributors": [
     "achingbrain <alex@achingbrain.net>"
-  ]
+  ],
+  "types": "dist/src/index.d.ts"
 }
