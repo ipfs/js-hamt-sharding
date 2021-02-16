@@ -54,13 +54,13 @@ class Bucket {
   /**
    * @param {BucketOptions} options
    * @param {Bucket<T>} [parent]
-   * @param {number} [posAtParent]
+   * @param {number} [posAtParent=0]
    */
-  constructor (options, parent, posAtParent) {
+  constructor (options, parent, posAtParent = 0) {
     this._options = options
     this._popCount = 0
     this._parent = parent
-    this._posAtParent = posAtParent || -1
+    this._posAtParent = posAtParent
 
     /** @type {SA<Bucket<T> | BucketChild<T>>} */
     this._children = new SparseArray()
