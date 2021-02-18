@@ -1,45 +1,51 @@
 /* eslint-env mocha */
 'use strict'
 
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const expect = chai.expect
-const crypto = require('crypto')
+const { expect } = require('aegir/utils/chai')
+const multihashing = require('multihashing-async')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
-const ConsumableHash = require('../src/consumable-hash')
+const wrapHash = require('../src/consumable-hash')
+
+/**
+ * @typedef {import('../src/consumable-hash').InfiniteHash} InfiniteHash
+ */
 
 describe('HAMT: consumable hash', () => {
+  const val = uint8ArrayFromString('some value')
+  /** @type {(value: Uint8Array | InfiniteHash) => InfiniteHash} */
   let hash
 
   beforeEach(() => {
-    hash = ConsumableHash(hashFn)
+    hash = wrapHash(hashFn)
   })
 
   it('should refuse to hash a non String or buffer', () => {
     try {
+      // @ts-expect-error not a string or Uint8Array
       hash(1)
 
       throw new Error('Should have refused to hash value')
     } catch (err) {
-      expect(err.message).to.include('can only hash strings or buffers')
+      expect(err.message).to.include('can only hash Uint8Arrays')
     }
   })
 
   it('can take a 0 length value', async () => {
-    const result = await hash('some value').take(0)
+    const result = await hash(val).take(0)
 
     expect(result).to.be.eql(0)
   })
 
   it('can take a 10 bit value', async () => {
-    const result = await hash('some value').take(10)
+    const result = await hash(val).take(10)
 
     expect(result).to.be.eql(110)
   })
 
   it('can keep on taking a 10 bit value', async () => {
     let iter = 100
-    const h = hash('some value')
+    const h = hash(val)
 
     while (iter > 0) {
       const result = await h.take(10)
@@ -51,7 +57,7 @@ describe('HAMT: consumable hash', () => {
   })
 
   it('can untake all', async () => {
-    const h = hash('some value')
+    const h = hash(val)
 
     await h.take(10 * 100)
 
@@ -61,7 +67,7 @@ describe('HAMT: consumable hash', () => {
   it('keeps taking the same values after untaking all', async () => {
     let iter = 100
     const values = []
-    const h = hash('some value')
+    const h = hash(val)
 
     while (iter > 0) {
       values.push(await h.take(10))
@@ -80,9 +86,12 @@ describe('HAMT: consumable hash', () => {
   })
 })
 
-function hashFn (value) {
-  return crypto
-    .createHash('sha256')
-    .update(value)
-    .digest()
+/**
+ * @param {string | Uint8Array} value
+ */
+async function hashFn (value) {
+  const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
+
+  // remove the multihash identifier
+  return multihash.slice(2)
 }

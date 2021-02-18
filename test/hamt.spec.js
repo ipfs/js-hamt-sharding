@@ -1,18 +1,25 @@
 /* eslint-env mocha */
 'use strict'
 
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const expect = chai.expect
-const crypto = require('crypto')
+const { expect } = require('aegir/utils/chai')
+const multihashing = require('multihashing-async')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
-const HAMT = require('..')
+const { createHAMT } = require('..')
 
-const hashFn = function (value, callback) {
-  return crypto
-    .createHash('sha256')
-    .update(value)
-    .digest()
+/**
+ * @template T
+ * @typedef {import('../src').Bucket<T>} Bucket<T>
+ */
+
+/**
+ * @param {string | Uint8Array} value
+ */
+const hashFn = async function (value) {
+  const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
+
+  // remove the multihash identifier
+  return multihash.slice(2)
 }
 
 const options = {
@@ -21,15 +28,17 @@ const options = {
 
 describe('HAMT', () => {
   describe('basic', () => {
+    /** @type {Bucket<string>} */
     let bucket
 
     beforeEach(() => {
-      bucket = HAMT(options)
+      bucket = createHAMT(options)
     })
 
     it('should require a hash function', () => {
       try {
-        HAMT()
+        // @ts-ignore options are not optional
+        createHAMT()
 
         throw new Error('Should have required a hash function')
       } catch (err) {
@@ -39,16 +48,13 @@ describe('HAMT', () => {
 
     it('should require a hash function with options', () => {
       try {
-        HAMT({})
+        // @ts-ignore hashFn is required
+        createHAMT({})
 
         throw new Error('Should have required a hash function')
       } catch (err) {
         expect(err.message).to.include('please define an options.hashFn')
       }
-    })
-
-    it('should recognise a bucket as a bucket', () => {
-      expect(HAMT.isBucket(bucket)).to.be.true()
     })
 
     it('get unknown key returns undefined', async () => {
@@ -145,10 +151,11 @@ describe('HAMT', () => {
   })
 
   describe('many keys', () => {
+    /** @type {Bucket<string>} */
     let bucket
 
     beforeEach(() => {
-      bucket = HAMT(options)
+      bucket = createHAMT(options)
     })
 
     it('accepts putting many keys', async () => {
@@ -172,6 +179,10 @@ describe('HAMT', () => {
 
       const masterHead = keys.pop()
 
+      if (!masterHead) {
+        throw new Error('masterHead not found')
+      }
+
       for (const head of keys.reverse()) {
         expect(await bucket.get(head)).to.eql(head)
 
@@ -191,10 +202,11 @@ describe('HAMT', () => {
   })
 
   describe('exhausting hash', () => {
+    /** @type {Bucket<string>} */
     let bucket
 
     beforeEach(() => {
-      bucket = HAMT({
+      bucket = createHAMT({
         hashFn: smallHashFn,
         bits: 2
       })
@@ -204,16 +216,20 @@ describe('HAMT', () => {
       await insertKeys(400, bucket)
     })
 
-    function smallHashFn (value) {
-      return crypto
-        .createHash('sha256')
-        .update(value)
-        .digest()
-        .slice(0, 2) // just return the 2 first bytes of the hash
+    /**
+     * @param {string | Uint8Array} value
+     */
+    async function smallHashFn (value) {
+      const hash = await hashFn(value)
+      return hash.slice(0, 2) // just return the 2 first bytes of the hash
     }
   })
 })
 
+/**
+ * @param {number} count
+ * @param {Bucket<string>} bucket
+ */
 async function insertKeys (count, bucket) {
   const keys = Array.from({ length: count }, (_, i) => i.toString())
 

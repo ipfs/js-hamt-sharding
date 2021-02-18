@@ -1,15 +1,16 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
+const { expect } = require('aegir/utils/chai')
 
 const ConsumableBuffer = require('../src/consumable-buffer')
 
 describe('HAMT: consumable buffer', () => {
+  /** @type {ConsumableBuffer} */
   let buf
 
   it('can create an empty one', () => {
-    buf = new ConsumableBuffer([])
+    buf = new ConsumableBuffer(Uint8Array.from([]))
   })
 
   it('from which I can take nothing', () => {
@@ -22,7 +23,7 @@ describe('HAMT: consumable buffer', () => {
   })
 
   it('can create one with one zeroed byte', () => {
-    buf = new ConsumableBuffer([0])
+    buf = new ConsumableBuffer(Uint8Array.from([0]))
   })
 
   it('from which I can take nothing', () => {
@@ -35,7 +36,7 @@ describe('HAMT: consumable buffer', () => {
   })
 
   it('can create one with one byte with ones', () => {
-    buf = new ConsumableBuffer([0b11111111])
+    buf = new ConsumableBuffer(Uint8Array.from([0b11111111]))
   })
 
   it('from which I can take nothing', () => {
@@ -58,7 +59,7 @@ describe('HAMT: consumable buffer', () => {
   })
 
   it('can create one with 3 full bytes', () => {
-    buf = new ConsumableBuffer([0xff, 0xff, 0xff])
+    buf = new ConsumableBuffer(Uint8Array.from([0xff, 0xff, 0xff]))
   })
 
   it('from which I can take nothing', () => {
@@ -76,7 +77,7 @@ describe('HAMT: consumable buffer', () => {
   })
 
   it('can create one with 3 full bytes', () => {
-    buf = new ConsumableBuffer([0xff, 0xff, 0xff])
+    buf = new ConsumableBuffer(Uint8Array.from([0xff, 0xff, 0xff]))
   })
 
   it('from which I can take 2 bits at a time', () => {
@@ -90,7 +91,7 @@ describe('HAMT: consumable buffer', () => {
   })
 
   it('can create one with 3 full bytes', () => {
-    buf = new ConsumableBuffer([0xff, 0xff, 0xff])
+    buf = new ConsumableBuffer(Uint8Array.from([0xff, 0xff, 0xff]))
   })
 
   it('from which I can take every bit', () => {
