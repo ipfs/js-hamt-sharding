@@ -1,3 +1,12 @@
+# [2.0.0](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v1.0.0...v2.0.0) (2021-02-18)
+
+
+### Features
+
+* add types ([#3](https://github.com/ipfs-shipyard/js-hamt-sharding/issues/3)) ([8b7e204](https://github.com/ipfs-shipyard/js-hamt-sharding/commit/8b7e204b9452ab3f7be1717bef0caa715dcbd91c))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v0.0.2...v1.0.0) (2020-01-08)
 
