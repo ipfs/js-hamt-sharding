@@ -7,7 +7,7 @@
   "scripts": {
     "test": "aegir test",
     "prepare": "aegir build --no-bundle",
-    "lint": "aegir lint",
+    "lint": "aegir ts -p check && aegir lint",
     "release": "aegir release",
     "release-minor": "aegir release --type minor",
     "release-major": "aegir release --type major",
@@ -33,6 +33,7 @@
   "homepage": "https://github.com/ipfs-shipyard/js-hamt-sharding#readme",
   "devDependencies": {
     "aegir": "^35.0.2",
+    "it-length": "^1.0.3",
     "multihashing-async": "^2.1.0",
     "util": "^0.12.4"
   },

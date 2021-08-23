@@ -4,6 +4,7 @@
 const { expect } = require('aegir/utils/chai')
 const multihashing = require('multihashing-async')
 const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
+const length = require('it-length')
 
 const { createHAMT } = require('..')
 
@@ -137,14 +138,11 @@ describe('HAMT', () => {
 
     it('should iterate over children', async () => {
       const expectedCount = 400
-      let childCount = 0
 
       // insert enough keys to cause multiple buckets to be created
       await insertKeys(expectedCount, bucket)
 
-      for await (const child of bucket.eachLeafSeries()) { // eslint-disable-line no-unused-vars
-        childCount++
-      }
+      const childCount = await length(bucket.eachLeafSeries())
 
       expect(childCount).to.equal(expectedCount)
     })
