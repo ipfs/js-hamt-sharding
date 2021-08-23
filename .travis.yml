@@ -1,31 +1,32 @@
 language: node_js
 cache: npm
-branches:
-  only:
-  - master
-  - /^release\/.*$/
+dist: bionic
 stages:
   - check
   - test
   - cov
 
+branches:
+  only:
+  - master
+  - /^release\/.*$/
+
 node_js:
-  - '14'
-  - '15'
+  - 'lts/*'
+  - 'node'
 
 os:
   - linux
   - osx
   - windows
 
-script: npx nyc -s npm run test -- -t node --bail
+script: npx aegir test -t node --cov --bail
 after_success: npx nyc report --reporter=text-lcov > coverage.lcov && npx codecov
 
 jobs:
   include:
     - stage: check
       script:
-        - npx aegir commitlint --travis
         - npx aegir dep-check
         - npm run lint
 
@@ -39,7 +40,19 @@ jobs:
       name: firefox
       addons:
         firefox: latest
-      script: npx aegir test -t browser -t webworker -- --browsers FirefoxHeadless
+      script: npx aegir test -t browser -t webworker -- --browser firefox
+
+    - stage: test
+      name: electron-main
+      os: osx
+      script:
+        - npx aegir test -t electron-main --bail
+
+    - stage: test
+      name: electron-renderer
+      os: osx
+      script:
+        - npx aegir test -t electron-renderer --bail
 
 notifications:
   email: false

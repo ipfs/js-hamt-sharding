@@ -2,7 +2,7 @@
 
 // @ts-ignore
 const SparseArray = require('sparse-array')
-const uint8ArrayFromString = require('uint8arrays/from-string')
+const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
 
 /**
  * @typedef {import('./consumable-hash').InfiniteHash} InfiniteHash
