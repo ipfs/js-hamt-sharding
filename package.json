@@ -32,12 +32,13 @@
   },
   "homepage": "https://github.com/ipfs-shipyard/js-hamt-sharding#readme",
   "devDependencies": {
-    "aegir": "^30.3.0",
-    "multihashing-async": "^2.1.0"
+    "aegir": "^35.0.2",
+    "multihashing-async": "^2.1.0",
+    "util": "^0.12.4"
   },
   "dependencies": {
     "sparse-array": "^1.3.1",
-    "uint8arrays": "^2.1.2"
+    "uint8arrays": "^3.0.0"
   },
   "contributors": [
     "achingbrain <alex@achingbrain.net>"

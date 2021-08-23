@@ -1,7 +1,7 @@
 'use strict'
 
 const ConsumableBuffer = require('./consumable-buffer')
-const uint8ArrayConcat = require('uint8arrays/concat')
+const { concat: uint8ArrayConcat } = require('uint8arrays/concat')
 
 /**
  * @param {(value: Uint8Array) => Promise<Uint8Array>} hashFn
