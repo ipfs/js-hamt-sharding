@@ -1,16 +1,8 @@
-'use strict'
+import { ConsumableBuffer } from './consumable-buffer.js'
+import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 
-const ConsumableBuffer = require('./consumable-buffer')
-const { concat: uint8ArrayConcat } = require('uint8arrays/concat')
-
-/**
- * @param {(value: Uint8Array) => Promise<Uint8Array>} hashFn
- */
-function wrapHash (hashFn) {
-  /**
-   * @param {InfiniteHash | Uint8Array} value
-   */
-  function hashing (value) {
+export function wrapHash (hashFn: (value: Uint8Array) => Promise<Uint8Array>) {
+  function hashing (value: InfiniteHash | Uint8Array) {
     if (value instanceof InfiniteHash) {
       // already a hash. return it
       return value
@@ -22,13 +14,15 @@ function wrapHash (hashFn) {
   return hashing
 }
 
-class InfiniteHash {
-  /**
-   *
-   * @param {Uint8Array} value
-   * @param {(value: Uint8Array) => Promise<Uint8Array>} hashFn
-   */
-  constructor (value, hashFn) {
+export class InfiniteHash {
+  _value: Uint8Array
+  _hashFn: (value: Uint8Array) => Promise<Uint8Array>
+  _depth: number
+  _availableBits: number
+  _currentBufferIndex: number
+  _buffers: ConsumableBuffer[]
+
+  constructor (value: Uint8Array, hashFn: (value: Uint8Array) => Promise<Uint8Array>) {
     if (!(value instanceof Uint8Array)) {
       throw new Error('can only hash Uint8Arrays')
     }
@@ -38,15 +32,10 @@ class InfiniteHash {
     this._depth = -1
     this._availableBits = 0
     this._currentBufferIndex = 0
-
-    /** @type {ConsumableBuffer[]} */
     this._buffers = []
   }
 
-  /**
-   * @param {number} bits
-   */
-  async take (bits) {
+  async take (bits: number) {
     let pendingBits = bits
 
     while (this._availableBits < pendingBits) {
@@ -71,10 +60,7 @@ class InfiniteHash {
     return result
   }
 
-  /**
-   * @param {number} bits
-   */
-  untake (bits) {
+  untake (bits: number) {
     let pendingBits = bits
 
     while (pendingBits > 0) {
@@ -102,6 +88,3 @@ class InfiniteHash {
     this._availableBits += buffer.availableBits()
   }
 }
-
-module.exports = wrapHash
-module.exports.InfiniteHash = InfiniteHash

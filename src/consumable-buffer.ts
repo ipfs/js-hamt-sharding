@@ -1,5 +1,3 @@
-'use strict'
-
 const START_MASKS = [
   0b11111111,
   0b11111110,
@@ -22,11 +20,12 @@ const STOP_MASKS = [
   0b11111111
 ]
 
-module.exports = class ConsumableBuffer {
-  /**
-   * @param {Uint8Array} value
-   */
-  constructor (value) {
+export class ConsumableBuffer {
+  _value: Uint8Array
+  _currentBytePos: number
+  _currentBitPos: number
+
+  constructor (value: Uint8Array) {
     this._value = value
     this._currentBytePos = value.length - 1
     this._currentBitPos = 7
@@ -40,10 +39,7 @@ module.exports = class ConsumableBuffer {
     return this._value.length * 8
   }
 
-  /**
-   * @param {number} bits
-   */
-  take (bits) {
+  take (bits: number) {
     let pendingBits = bits
     let result = 0
     while (pendingBits && this._haveBits()) {
@@ -65,10 +61,7 @@ module.exports = class ConsumableBuffer {
     return result
   }
 
-  /**
-   * @param {number} bits
-   */
-  untake (bits) {
+  untake (bits: number) {
     this._currentBitPos += bits
     while (this._currentBitPos > 7) {
       this._currentBitPos -= 8
@@ -81,20 +74,11 @@ module.exports = class ConsumableBuffer {
   }
 }
 
-/**
- * @param {number} byte
- * @param {number} start
- * @param {number} length
- */
-function byteBitsToInt (byte, start, length) {
+function byteBitsToInt (byte: number, start: number, length: number) {
   const mask = maskFor(start, length)
   return (byte & mask) >>> start
 }
 
-/**
- * @param {number} start
- * @param {number} length
- */
-function maskFor (start, length) {
+function maskFor (start: number, length: number) {
   return START_MASKS[start] & STOP_MASKS[Math.min(length + start - 1, 7)]
 }

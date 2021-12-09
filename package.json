@@ -3,15 +3,18 @@
   "version": "2.0.1",
   "description": "JavaScript implementation of sharding using hash array mapped tries",
   "leadMaintainer": "Alex Potsides <alex.potsides@protocol.ai>",
-  "main": "src/index.js",
+  "main": "dist/src/index.js",
+  "type": "module",
   "scripts": {
-    "test": "aegir test",
-    "prepare": "aegir build --no-bundle",
+    "pretest": "npm run build",
+    "test": "aegir test -f ./dist/test/*.js",
+    "prepare": "npm run build",
     "lint": "aegir ts -p check && aegir lint",
     "release": "aegir release",
     "release-minor": "aegir release --type minor",
     "release-major": "aegir release --type major",
-    "coverage": "aegir coverage"
+    "coverage": "aegir coverage",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -44,5 +47,15 @@
   "contributors": [
     "achingbrain <alex@achingbrain.net>"
   ],
-  "types": "dist/src/index.d.ts"
+  "typesVersions": {
+    "*": {
+      "src/*": [
+        "dist/src/*",
+        "dist/src/*/index"
+      ]
+    }
+  },
+  "files": [
+    "dist/src"
+  ]
 }

@@ -1,13 +1,10 @@
 /* eslint-env mocha */
-'use strict'
+import { expect } from 'aegir/utils/chai.js'
 
-const { expect } = require('aegir/utils/chai')
-
-const ConsumableBuffer = require('../src/consumable-buffer')
+import { ConsumableBuffer } from '../src/consumable-buffer.js'
 
 describe('HAMT: consumable buffer', () => {
-  /** @type {ConsumableBuffer} */
-  let buf
+  let buf: ConsumableBuffer
 
   it('can create an empty one', () => {
     buf = new ConsumableBuffer(Uint8Array.from([]))

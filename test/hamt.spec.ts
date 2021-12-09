@@ -1,22 +1,12 @@
 /* eslint-env mocha */
-'use strict'
+import { expect } from 'aegir/utils/chai.js'
+import multihashing from 'multihashing-async'
+import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
+import length from 'it-length'
 
-const { expect } = require('aegir/utils/chai')
-const multihashing = require('multihashing-async')
-const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
-const length = require('it-length')
+import { createHAMT, Bucket } from '../src/index.js'
 
-const { createHAMT } = require('..')
-
-/**
- * @template T
- * @typedef {import('../src').Bucket<T>} Bucket<T>
- */
-
-/**
- * @param {string | Uint8Array} value
- */
-const hashFn = async function (value) {
+const hashFn = async function (value: string | Uint8Array) {
   const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
 
   // remove the multihash identifier
@@ -29,8 +19,7 @@ const options = {
 
 describe('HAMT', () => {
   describe('basic', () => {
-    /** @type {Bucket<string>} */
-    let bucket
+    let bucket: Bucket<string>
 
     beforeEach(() => {
       bucket = createHAMT(options)
@@ -42,7 +31,7 @@ describe('HAMT', () => {
         createHAMT()
 
         throw new Error('Should have required a hash function')
-      } catch (err) {
+      } catch (err: any) {
         expect(err.message).to.include('please define an options.hashFn')
       }
     })
@@ -53,7 +42,7 @@ describe('HAMT', () => {
         createHAMT({})
 
         throw new Error('Should have required a hash function')
-      } catch (err) {
+      } catch (err: any) {
         expect(err.message).to.include('please define an options.hashFn')
       }
     })
@@ -149,8 +138,7 @@ describe('HAMT', () => {
   })
 
   describe('many keys', () => {
-    /** @type {Bucket<string>} */
-    let bucket
+    let bucket: Bucket<string>
 
     beforeEach(() => {
       bucket = createHAMT(options)
@@ -200,8 +188,7 @@ describe('HAMT', () => {
   })
 
   describe('exhausting hash', () => {
-    /** @type {Bucket<string>} */
-    let bucket
+    let bucket: Bucket<string>
 
     beforeEach(() => {
       bucket = createHAMT({
@@ -214,21 +201,14 @@ describe('HAMT', () => {
       await insertKeys(400, bucket)
     })
 
-    /**
-     * @param {string | Uint8Array} value
-     */
-    async function smallHashFn (value) {
+    async function smallHashFn (value: string | Uint8Array) {
       const hash = await hashFn(value)
       return hash.slice(0, 2) // just return the 2 first bytes of the hash
     }
   })
 })
 
-/**
- * @param {number} count
- * @param {Bucket<string>} bucket
- */
-async function insertKeys (count, bucket) {
+async function insertKeys (count: number, bucket: Bucket<string>) {
   const keys = Array.from({ length: count }, (_, i) => i.toString())
 
   for (const key of keys) {

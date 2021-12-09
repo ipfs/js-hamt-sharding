@@ -1,20 +1,13 @@
 /* eslint-env mocha */
-'use strict'
+import { expect } from 'aegir/utils/chai.js'
+import multihashing from 'multihashing-async'
+import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 
-const { expect } = require('aegir/utils/chai')
-const multihashing = require('multihashing-async')
-const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
-
-const wrapHash = require('../src/consumable-hash')
-
-/**
- * @typedef {import('../src/consumable-hash').InfiniteHash} InfiniteHash
- */
+import { wrapHash, InfiniteHash } from '../src/consumable-hash.js'
 
 describe('HAMT: consumable hash', () => {
   const val = uint8ArrayFromString('some value')
-  /** @type {(value: Uint8Array | InfiniteHash) => InfiniteHash} */
-  let hash
+  let hash: (value: Uint8Array | InfiniteHash) => InfiniteHash
 
   beforeEach(() => {
     hash = wrapHash(hashFn)
@@ -26,7 +19,7 @@ describe('HAMT: consumable hash', () => {
       hash(1)
 
       throw new Error('Should have refused to hash value')
-    } catch (err) {
+    } catch (err: any) {
       expect(err.message).to.include('can only hash Uint8Arrays')
     }
   })
@@ -86,10 +79,7 @@ describe('HAMT: consumable hash', () => {
   })
 })
 
-/**
- * @param {string | Uint8Array} value
- */
-async function hashFn (value) {
+async function hashFn (value: string | Uint8Array) {
   const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
 
   // remove the multihash identifier
