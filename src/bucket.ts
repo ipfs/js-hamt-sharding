@@ -237,7 +237,7 @@ export class Bucket<T> {
     }
   }
 
-  _at (index:number ) {
+  _at (index: number) {
     return this._children.get(index)
   }
 }
