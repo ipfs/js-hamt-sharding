@@ -3,7 +3,7 @@ import { expect } from 'aegir/utils/chai.js'
 import multihashing from 'multihashing-async'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 
-import wrapHash, { InfiniteHash } from '../src/consumable-hash.js'
+import { wrapHash, InfiniteHash } from '../src/consumable-hash.js'
 
 describe('HAMT: consumable hash', () => {
   const val = uint8ArrayFromString('some value')

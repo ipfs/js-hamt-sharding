@@ -1,7 +1,7 @@
-import ConsumableBuffer from './consumable-buffer.js'
+import { ConsumableBuffer } from './consumable-buffer.js'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 
-function wrapHash (hashFn: (value: Uint8Array) => Promise<Uint8Array>) {
+export function wrapHash (hashFn: (value: Uint8Array) => Promise<Uint8Array>) {
   function hashing (value: InfiniteHash | Uint8Array) {
     if (value instanceof InfiniteHash) {
       // already a hash. return it
@@ -14,7 +14,7 @@ function wrapHash (hashFn: (value: Uint8Array) => Promise<Uint8Array>) {
   return hashing
 }
 
-class InfiniteHash {
+export class InfiniteHash {
   _value: Uint8Array
   _hashFn: (value: Uint8Array) => Promise<Uint8Array>
   _depth: number
@@ -88,6 +88,3 @@ class InfiniteHash {
     this._availableBits += buffer.availableBits()
   }
 }
-
-export default wrapHash
-export { InfiniteHash }

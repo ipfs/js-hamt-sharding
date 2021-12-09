@@ -20,7 +20,7 @@ const STOP_MASKS = [
   0b11111111
 ]
 
-export default class ConsumableBuffer {
+export class ConsumableBuffer {
   _value: Uint8Array
   _currentBytePos: number
   _currentBitPos: number

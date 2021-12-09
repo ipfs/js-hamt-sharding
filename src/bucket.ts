@@ -32,7 +32,7 @@ interface BucketOptions {
   hash: (value: Uint8Array | InfiniteHash) => InfiniteHash
 }
 
-class Bucket<T> {
+export class Bucket<T> {
   _options: BucketOptions
   _popCount: number
   _parent?: Bucket<T>
@@ -272,5 +272,3 @@ async function asyncTransformBucket<T> (bucket: Bucket<T>, asyncMap: (value: Buc
 
   return asyncReduce(output)
 }
-
-export default Bucket

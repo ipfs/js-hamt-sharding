@@ -1,12 +1,12 @@
-import Bucket from './bucket.js'
-import wrapHash from './consumable-hash.js'
+import { Bucket } from './bucket.js'
+import { wrapHash } from './consumable-hash.js'
 
 interface UserBucketOptions {
   hashFn: (value: Uint8Array) => Promise<Uint8Array>
   bits?: number
 }
 
-function createHAMT<T> (options: UserBucketOptions) {
+export function createHAMT<T> (options: UserBucketOptions) {
   if (!options || !options.hashFn) {
     throw new Error('please define an options.hashFn')
   }
@@ -19,7 +19,4 @@ function createHAMT<T> (options: UserBucketOptions) {
   return new Bucket<T>(bucketOptions)
 }
 
-export {
-  createHAMT,
-  Bucket
-}
+export { Bucket }
