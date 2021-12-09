@@ -8,7 +8,7 @@
   "scripts": {
     "pretest": "npm run build",
     "test": "aegir test -f ./dist/test/*.js",
-    "prepare": "aegir build --no-bundle",
+    "prepare": "npm run build",
     "lint": "aegir ts -p check && aegir lint",
     "release": "aegir release",
     "release-minor": "aegir release --type minor",
