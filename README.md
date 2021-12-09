@@ -52,8 +52,8 @@
 ### Example
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
-const crypto = require('crypto-promise')
+import { createHAMT } from 'hamt-sharding'
+import crypto from 'crypto-promise'
 
 // decide how to hash buffers made from keys, can return a Promise
 const hashFn = async (buf) => {
@@ -76,13 +76,13 @@ const output = await bucket.get('key')
 ## API
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 ```
 
 ### `bucket.put(key, value)`
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
@@ -91,7 +91,7 @@ await bucket.put('key', 'value')
 ### `bucket.get(key)`
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
@@ -102,7 +102,7 @@ console.info(await bucket.get('key')) // 'value'
 ### `bucket.del(key)`
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
@@ -114,7 +114,7 @@ console.info(await bucket.get('key')) // undefined
 ### `bucket.leafCount()`
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 const bucket = createHAMT({...})
 
 console.info(bucket.leafCount()) // 0
@@ -127,7 +127,7 @@ console.info(bucket.leafCount()) // 1
 ### `bucket.childrenCount()`
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 const bucket = createHAMT({...})
 
 console.info(bucket.childrenCount()) // 0
@@ -141,7 +141,7 @@ console.info(bucket.childrenCount()) // 234 -- dependent on hashing algorithm
 ### `bucket.eachLeafSeries()`
 
 ```javascript
-const { createHAMT } = require('hamt-sharding')
+import { createHAMT } from 'hamt-sharding'
 const bucket = createHAMT({...})
 
 await bucket.put('key', 'value')
