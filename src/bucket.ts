@@ -98,7 +98,7 @@ export class Bucket<T> {
 
     for (const child of children) {
       if (child instanceof Bucket) {
-        yield * Array.from(child.eachLeafSeries())
+        yield * child.eachLeafSeries()
       } else {
         yield child
       }
