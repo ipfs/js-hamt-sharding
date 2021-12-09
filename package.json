@@ -54,5 +54,8 @@
         "dist/src/*/index"
       ]
     }
-  }
+  },
+  "files": [
+    "dist/src"
+  ]
 }
