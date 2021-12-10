@@ -1,4 +1,4 @@
-import { Bucket } from './bucket.js'
+import { Bucket, BucketOptions, BucketPosition, BucketChild } from './bucket.js'
 import { wrapHash } from './consumable-hash.js'
 
 interface UserBucketOptions {
@@ -20,3 +20,4 @@ export function createHAMT<T> (options: UserBucketOptions) {
 }
 
 export { Bucket }
+export type { BucketOptions, BucketPosition, BucketChild }
