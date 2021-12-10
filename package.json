@@ -14,7 +14,7 @@
     "release-minor": "aegir release --type minor",
     "release-major": "aegir release --type major",
     "coverage": "aegir coverage",
-    "build": "tsc --traceResolution"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
