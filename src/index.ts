@@ -1,4 +1,5 @@
-import { Bucket, BucketOptions, BucketPosition, BucketChild } from './bucket.js'
+import { Bucket } from './bucket.js'
+import type { BucketOptions, BucketPosition, BucketChild } from './bucket.js'
 import { wrapHash } from './consumable-hash.js'
 
 interface UserBucketOptions {
