@@ -3,7 +3,7 @@ import SparseArray from 'sparse-array'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import type { InfiniteHash } from './consumable-hash.js'
 
-interface BucketChild<V> {
+export interface BucketChild<V> {
   key: string
   value: V
   hash: InfiniteHash
@@ -20,14 +20,14 @@ interface SA<B> {
   unset: (i: number) => void
 }
 
-interface BucketPosition<T> {
+export interface BucketPosition<T> {
   bucket: Bucket<T>
   pos: number
   hash: InfiniteHash
   existingChild?: BucketChild<T>
 }
 
-interface BucketOptions {
+export interface BucketOptions {
   bits: number
   hash: (value: Uint8Array | InfiniteHash) => InfiniteHash
 }
