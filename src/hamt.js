@@ -1,7 +1,7 @@
 // @ts-ignore
 
 import * as API from "./hamt/api.js"
-// import { wrapHash } from "../dist/src/consumable-hash.js"
+import { wrapHash } from "../dist/src/consumable-hash.js"
 
 export { API }
 
@@ -11,9 +11,8 @@ export { API }
  * @param {(key:K) => Uint8Array} options.encode
  * @param {(key:Uint8Array) => Uint8Array} options.hash
  * @param {number} [options.bits]
- * @return {API.HAMT<K, V>}
  */
-export const create = ({ hash, encode, bits = 8 }) => ({
+export const create = ({ hash, encode, bits = 8 }) => new HAMTView({
   options: { hash: wrapHash(hash), encode, bits },
   children: [],
   popCount: 0
@@ -29,8 +28,44 @@ export const put = (self, key, value) => {
   const hash = self.options.hash(self.options.encode(key))
   const place = findNewShardAndPosition(self, key, hash)
 
-  return putAt(self, place, key, value)
+  return new HAMTView(putAt(self, place, key, value))
 }
+
+/**
+ * @template K, V, T
+ * @param {API.Shard<K, V>} self
+ * @param {K} key
+ * @param {T} notFound
+ * @returns {V|T}
+ */
+export const get = (self, key, notFound) => {
+  const child = findChild(self, key)
+  return child ? child.value : notFound
+}
+
+/**
+ * @template K, V, T
+ * @param {API.Shard<K, V>} self
+ * @param {K} key
+ * @returns {API.Entry<K, V>|null}
+ */
+export const findChild = (self, key) => {
+  const place = findPlace(self, key)
+  const child = nth(place.shard.children, place.pos, null)
+
+  if (child && isShardChild(child)) {
+    // should not be possible, this._findPlace should always
+    // return a location for a child, not a bucket
+    return null
+  }
+
+  if (child && child.key === key) {
+    return child
+  } else {
+    return null
+  }
+}
+
 
 /**
  * @template K, V
@@ -39,15 +74,11 @@ export const put = (self, key, value) => {
  * @param {API.InfiniteHash} hash
  * @returns {API.Position<K, V>}
  */
-export const findNewShardAndPosition = (
-  self,
-  key,
-  hash = self.options.hash(key)
-) => {
-  const place = findPlace(self, hash)
+export const findNewShardAndPosition = (self, key, hash=keyToHash(self, key)) => {
+  let place = findPlace(self, key, hash)
 
   // we have a conflict
-  if (place.entry && place.entry.key !== key) {
+  while (place.entry && place.entry.key !== key) {
     const shard = {
       ...self,
       parent: place.shard,
@@ -56,16 +87,24 @@ export const findNewShardAndPosition = (
     putChildAt(place.shard, place.pos, shard)
 
     // put the previous value
-    const newPlace = findPlace(shard, place.entry.hash)
+    const newPlace = findPlace(shard, place.key, place.entry.hash)
     putAt(newPlace.shard, newPlace, place.entry.key, place.entry.value)
 
-    return findNewShardAndPosition(shard, key, place.hash)
+    place = findPlace(shard, place.key, place.hash)
   }
+
   // no conflict, we found the place
-  else {
-    return place
-  }
+  return place
 }
+
+/**
+ * @template K, V
+ * @param {API.Shard<K, V>} self
+ * @param {K} key
+ * @returns {API.InfiniteHash}
+ */
+export const keyToHash = ({options:{encode, hash}}, key) => hash(encode(key))
+
 
 /**
  * @template K, V
@@ -79,23 +118,160 @@ const isShardChild = (child) =>
 /**
  * @template K, V
  * @param {API.Shard<K, V>} self
- * @param {API.InfiniteHash} hash
+ * @param {K} key
+ * @param {API.InfiniteHash} [hash]
  * @returns {API.Position<K, V>}
  */
 
-export const findPlace = (self, hash) => {
+export const findPlace = (self, key, hash=keyToHash(self, key)) => {
   const pos = hash.take(self.options.bits)
-  const child = get(self.children, pos, null)
+  const path = [pos]
+  let child = nth(self.children, pos, null)
 
-  if (child && isShardChild(child)) {
-    return findPlace(self, hash)
-  } else {
-    return {
-      shard: self,
-      entry: child,
-      pos,
-      hash
+  while(child && isShardChild(child)) {
+    const pos = hash.take(self.options.bits)
+    path.push(pos)
+    child = nth(self.children, pos, null)
+  }
+
+  
+  return {
+    shard: self,
+    entry: child,
+    pos,
+    key,
+    hash
+  }
+}
+
+
+/**
+ * @template K, V
+ * @param {API.Shard<K, V>} self
+ * @param {K} key
+ * @param {V} value
+ */
+export const set = (self, key, value) => {
+  const { stack, hash } = locate(self, key)
+  /** @type {API.Child<K, V>} */
+  let child = { key, hash, value }
+  let target = self
+
+  for (const place of stack) {
+    target = {
+      ...place.shard,
+      children: assign(place.shard.children, place.pos, child)
     }
+    child = target
+  }
+
+  return new HAMTView(target)
+}
+
+/**
+ * @template K, V
+ * @param {API.Shard<K, V>} self
+ * @param {K} key
+ * @param {API.InfiniteHash} [hash]
+ */
+const locate = (self, key, hash=keyToHash(self, key)) => {
+  const pos = hash.take(self.options.bits)
+  const stack = [{shard:self, pos}]
+  let child = nth(self.children, pos, null)
+  while (child && isShardChild(child)) {
+    const pos = hash.take(self.options.bits)
+    stack.unshift({shard:child, pos})
+    child = nth(self.children, pos, null)
+  }
+
+  return {
+    stack,
+    hash,
+    child
+  }
+}
+
+/**
+ * @template K, V
+ * @param {API.Shard<K, V>} self
+ * @param {K} key
+ */
+const traverse = function*(self, key) {
+  const hash = keyToHash(self, key)
+  const pos = hash.take(self.options.bits)
+  let parent = self
+  let child = null
+  while (child && isShardChild(child)) {
+    child = nth(parent.children, pos, null)
+    yield { parent, pos, child }
+  }
+}
+
+/**
+ * @template K, V
+ */
+
+class Cursor {
+  /**
+   * @param {API.HAMT<K, V>} hamt 
+   * @param {K} key 
+   */
+  constructor(hamt, key) {
+    this.hamt = hamt
+    this.key = key
+    this.hash = keyToHash(hamt, key)
+  }
+
+  take() {
+    return this.hash.take(this.hamt.options.bits)
+  }
+
+  /**
+   * @param {V} value 
+   */
+  set(value) {
+    const { hash, key } = this
+    let offset = this.take()
+    let shard = this.hamt
+    const stack = [{shard, offset }]
+    let child = nth(shard.children, offset, null)
+    while (child && isShardChild(child)) {
+      shard = child
+      offset = this.take()
+      stack.unshift({shard, offset})
+      child = nth(shard.children, offset, null)
+    }
+
+    if (child && !isShardChild(child) && child.key !== this.key) {
+      // shard = { 
+      //   ...shard,
+      //   //parent: shard,
+      //   // offset
+      //   children: assign(shard.children, offset, 
+      // }
+      // wrap existing child in a shard
+      const newShard = {
+        ...shard,
+        children: 
+          assign(
+            assign([], this.take(), { key, value: child.value, hash }),
+            this.take(),
+            { key, value, hash }
+          )
+      }
+
+      offset = this.take()
+    }
+
+    child = { key: this.key, value, hash: this.hash }
+    for (const {shard: hamt, offset} of stack) {
+      shard = new HAMTView({
+        ...hamt,
+        children: assign(hamt.children, offset, child)
+      })
+    }
+
+    return new HAMTView(shard)
   }
 }
 
@@ -120,11 +296,11 @@ export const putAt = (self, {pos, hash}, key, value) =>
  */
 
 const putChildAt = (self, pos, child) => {
-  const popCount = get(self.children, pos, null) != null
+  const popCount = nth(self.children, pos, null) != null
     ? self.popCount
     : self.popCount + 1
 
-    const children = set(self.children, pos, child)
+    const children = assign(self.children, pos, child)
 
     return { ...self, popCount, children }
 }
@@ -135,8 +311,8 @@ const putChildAt = (self, pos, child) => {
  * @param {number} index
  * @param {T} value
  */
-const set = (array, index, value) => {
-  if (get(array, index, null) !== value) {
+const assign = (array, index, value) => {
+  if (nth(array, index, null) !== value) {
     const copy = array.slice()
     copy[index] = value
     return copy
@@ -152,7 +328,7 @@ const set = (array, index, value) => {
  * @param {U} notFound
  * @returns {T|U} value
  */
-export const get = (array, index, notFound) =>
+export const nth = (array, index, notFound) =>
   index in array ? array[index] : notFound
 
 /**
@@ -162,3 +338,32 @@ export const get = (array, index, notFound) =>
  */
 export const tableSize = ({options}) => Math.pow(2, options.bits)
 
+/**
+ * @template K, V
+ */
+class HAMTView {
+  /**
+   * @param {API.Shard<K, V>} input 
+   */
+  constructor(input) {
+    this.options = input.options
+    this.children = input.children
+    this.popCount = input.popCount
+    Object.assign(this, input)
+  }
+  /**
+   * 
+   * @param {K} key 
+   * @param {V} value 
+   */
+  put(key, value) {
+    return put(this, key, value)
+  }
+
+  /**
+   * @param {K} key
+   */
+  get(key) {
+    return get(this, key, undefined)
+  }
+}

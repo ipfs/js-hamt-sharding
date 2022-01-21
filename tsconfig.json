@@ -2,7 +2,7 @@
   "extends": "aegir/src/config/tsconfig.aegir.json",
   "compilerOptions": {
     "allowJs": true,
-    "checkJs": false,
+    "checkJs": true,
     "outDir": "dist",
     "emitDeclarationOnly": false,
     "module": "ES2020"

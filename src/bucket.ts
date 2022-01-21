@@ -162,6 +162,8 @@ export class Bucket<T> {
   _findNewBucketAndPos (key: string | InfiniteHash): BucketPosition<T> {
     const place = this._findPlace(key)
 
+    // TODO: This seems like a bug because key may be a hash here when
+    // descended second time on linke 176
     if (place.existingChild && place.existingChild.key !== key) {
       // conflict
       const bucket = new Bucket(this._options, place.bucket, place.pos)

@@ -3,8 +3,9 @@ import { createHAMT, Bucket } from "./dist/src/index.js"
 import SparseArray from "sparse-array"
 import { fromString as utf8Encode } from 'uint8arrays/from-string'
 import * as BitField from "./src/bitfield.js"
+import * as HAMT from "./src/hamt.js"
 export const hash = (key) =>
-  murmur128.encode(utf8Encode(key))
+  murmur128.encode(key)
     // Murmur3 outputs 128 bit but, accidentally, IPFS Go's
     // implementation only uses the first 64, so we must do the same
     // for parity..
@@ -33,6 +34,14 @@ function getByteSize(num) {
     return out;
 }
 
+
+const populate = (hamt, count) => {
+  for (const n of Array(count).keys()) {
+    hamt = hamt.put(String(n), n) || hamt
+  }
+  return hamt
+}
+
 Object.assign(globalThis, {
   SparseArray,
   BitField,
@@ -44,5 +53,11 @@ Object.assign(globalThis, {
   arr: new SparseArray(),
   bitfield: BitField.create(128, 8),
   getByteSize,
-  hamt: createHAMT({ hashFn })
+  bucket: createHAMT({ hashFn }),
+  HAMT,
+  hamt: HAMT.create({
+    hash,
+    encode: utf8Encode
+  }),
+  populate
 })

@@ -13,7 +13,7 @@ export type Child<K, V> =
   | Shard<K, V>
 
 export interface Shard<K, V> extends HAMT<K, V> {
-  readonly key: K
+
 }
 
 export interface HAMT<K, V> {
@@ -35,10 +35,11 @@ export interface Entry<K, V> {
 
 
 export interface Position<K, V> {
-  readonly shard: Shard<K, V>
+  readonly shard: HAMT<K, V>
   readonly pos: number
 
   readonly hash: InfiniteHash
+  readonly key: K
 
   readonly entry: Entry<K, V> | null
 }
