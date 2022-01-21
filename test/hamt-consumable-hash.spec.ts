@@ -32,7 +32,7 @@ describe('HAMT: consumable hash', () => {
   it('can take a 10 bit value', async () => {
     const result = await hash(val).take(10)
 
-    expect(result).to.be.eql(110)
+    expect(result).to.be.eql(721)
   })
 
   it('can keep on taking a 10 bit value', async () => {
