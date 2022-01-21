@@ -1,9 +1,9 @@
 import { Bucket } from './bucket.js'
 import type { BucketOptions, BucketPosition, BucketChild } from './bucket.js'
-import { wrapHash } from './consumable-hash.js'
+import { wrapHash, HashFn } from './consumable-hash.js'
 
 interface UserBucketOptions {
-  hashFn: (value: Uint8Array) => Promise<Uint8Array>
+  hashFn: HashFn
   bits?: number
 }
 

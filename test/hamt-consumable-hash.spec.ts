@@ -1,8 +1,7 @@
 /* eslint-env mocha */
 import { expect } from 'aegir/utils/chai.js'
-import multihashing from 'multihashing-async'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-
+import * as murmur3128 from '@multiformats/murmur3/murmur128.js'
 import { wrapHash, InfiniteHash } from '../src/consumable-hash.js'
 
 describe('HAMT: consumable hash', () => {
@@ -19,8 +18,8 @@ describe('HAMT: consumable hash', () => {
       hash(1)
 
       throw new Error('Should have refused to hash value')
-    } catch (err: any) {
-      expect(err.message).to.include('can only hash Uint8Arrays')
+    } catch (err) {
+      expect(String(err)).to.include('can only hash Uint8Arrays')
     }
   })
 
@@ -79,9 +78,8 @@ describe('HAMT: consumable hash', () => {
   })
 })
 
-async function hashFn (value: string | Uint8Array) {
-  const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
-
-  // remove the multihash identifier
-  return multihash.slice(2)
+const hashFn = function (value: string | Uint8Array) {
+  const bytes = value instanceof Uint8Array ? value : uint8ArrayFromString(value)
+  return murmur3128.encode(bytes)
 }
+

@@ -8,7 +8,7 @@
   "scripts": {
     "pretest": "npm run build",
     "test": "aegir test -f ./dist/test/*.js",
-    "prepare": "npm run build",
+    "-prepare": "npm run build",
     "lint": "aegir ts -p check && aegir lint",
     "release": "aegir release",
     "release-minor": "aegir release --type minor",
@@ -38,7 +38,8 @@
     "aegir": "^35.0.2",
     "it-length": "^1.0.3",
     "multihashing-async": "^2.1.0",
-    "util": "^0.12.4"
+    "util": "^0.12.4",
+    "@multiformats/murmur3": "git://github.com/multiformats/js-murmur3.git#feat/sync-api"
   },
   "dependencies": {
     "sparse-array": "^1.3.1",

@@ -1,16 +1,14 @@
 /* eslint-env mocha */
 import { expect } from 'aegir/utils/chai.js'
-import multihashing from 'multihashing-async'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import length from 'it-length'
+import * as murmur3128 from '@multiformats/murmur3/murmur128.js'
 
 import { createHAMT, Bucket } from '../src/index.js'
 
-const hashFn = async function (value: string | Uint8Array) {
-  const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
-
-  // remove the multihash identifier
-  return multihash.slice(2)
+const hashFn = function (value: string | Uint8Array) {
+  const bytes = value instanceof Uint8Array ? value : uint8ArrayFromString(value)
+  return murmur3128.encode(bytes)
 }
 
 const options = {
@@ -31,8 +29,8 @@ describe('HAMT', () => {
         createHAMT()
 
         throw new Error('Should have required a hash function')
-      } catch (err: any) {
-        expect(err.message).to.include('please define an options.hashFn')
+      } catch (err) {
+        expect(String(err)).to.include('please define an options.hashFn')
       }
     })
 
@@ -42,8 +40,8 @@ describe('HAMT', () => {
         createHAMT({})
 
         throw new Error('Should have required a hash function')
-      } catch (err: any) {
-        expect(err.message).to.include('please define an options.hashFn')
+      } catch (err) {
+        expect(String(err)).to.include('please define an options.hashFn')
       }
     })
 
@@ -201,8 +199,8 @@ describe('HAMT', () => {
       await insertKeys(400, bucket)
     })
 
-    async function smallHashFn (value: string | Uint8Array) {
-      const hash = await hashFn(value)
+    function smallHashFn (value: string | Uint8Array) {
+      const hash = hashFn(value)
       return hash.slice(0, 2) // just return the 2 first bytes of the hash
     }
   })
