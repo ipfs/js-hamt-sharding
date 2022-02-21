@@ -42,7 +42,7 @@ export class ConsumableBuffer {
   take (bits: number) {
     let pendingBits = bits
     let result = 0
-    while (pendingBits && this._haveBits()) {
+    while (pendingBits > 0 && this._haveBits()) {
       const byte = this._value[this._currentBytePos]
       const availableBits = this._currentBitPos + 1
       const taking = Math.min(availableBits, pendingBits)

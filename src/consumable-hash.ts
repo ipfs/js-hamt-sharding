@@ -80,7 +80,7 @@ export class InfiniteHash {
   async _produceMoreBits () {
     this._depth++
 
-    const value = this._depth ? uint8ArrayConcat([this._value, Uint8Array.from([this._depth])]) : this._value
+    const value = this._depth > 0 ? uint8ArrayConcat([this._value, Uint8Array.from([this._depth])]) : this._value
     const hashValue = await this._hashFn(value)
     const buffer = new ConsumableBuffer(hashValue)
 

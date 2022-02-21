@@ -27,7 +27,7 @@ describe('HAMT', () => {
 
     it('should require a hash function', () => {
       try {
-        // @ts-ignore options are not optional
+        // @ts-expect-error options are not optional
         createHAMT()
 
         throw new Error('Should have required a hash function')
@@ -38,7 +38,7 @@ describe('HAMT', () => {
 
     it('should require a hash function with options', () => {
       try {
-        // @ts-ignore hashFn is required
+        // @ts-expect-error hashFn is required
         createHAMT({})
 
         throw new Error('Should have required a hash function')
@@ -155,7 +155,7 @@ describe('HAMT', () => {
     it('accepts putting many keys in parallel', async () => {
       const keys = Array.from({ length: 400 }, (_, i) => i.toString())
 
-      await Promise.all(keys.map(key => bucket.put(key, key)))
+      await Promise.all(keys.map(async key => await bucket.put(key, key)))
     })
 
     it('can remove all the keys and still find remaining', async function () {
@@ -165,7 +165,7 @@ describe('HAMT', () => {
 
       const masterHead = keys.pop()
 
-      if (!masterHead) {
+      if (masterHead == null) {
         throw new Error('masterHead not found')
       }
 
