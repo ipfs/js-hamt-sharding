@@ -1,10 +1,10 @@
-# hamt-sharding
+# hamt-sharding <!-- omit in toc -->
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Build Status](https://flat.badgen.net/travis/ipfs-shipyard/js-hamt-sharding)](https://travis-ci.com/ipfs-shipyard/js-hamt-sharding)
+[![Build Status](https://github.com/ipfs/js-hamt-sharding/actions/workflows/js-test-and-release.yml/badge.svg?branch=main)](https://github.com/ipfs/js-hamt-sharding/actions/workflows/js-test-and-release.yml)
 [![Codecov](https://codecov.io/gh/ipfs-shipyard/js-hamt-sharding/branch/master/graph/badge.svg)](https://codecov.io/gh/ipfs-shipyard/js-hamt-sharding)
 [![Dependency Status](https://david-dm.org/ipfs-shipyard/js-hamt-sharding.svg?style=flat-square)](https://david-dm.org/ipfs/js-hamt-sharding)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
@@ -13,33 +13,26 @@
 
 > JavaScript implementation of hamt for use in sharding
 
-## Lead Maintainer
+## Table of Contents <!-- omit in toc -->
 
-[Alex Potsides](https://github.com/achingbrain)
-
-## Table of Contents
-
-- [hamt-sharding](#hamt-sharding)
-  - [Lead Maintainer](#lead-maintainer)
-  - [Table of Contents](#table-of-contents)
-  - [Install](#install)
-  - [Usage](#usage)
-    - [Example](#example)
-  - [API](#api)
-    - [`bucket.put(key, value)`](#bucketputkey-value)
-    - [`bucket.get(key)`](#bucketgetkey)
-    - [`bucket.del(key)`](#bucketdelkey)
-    - [`bucket.leafCount()`](#bucketleafcount)
-    - [`bucket.childrenCount()`](#bucketchildrencount)
-    - [`bucket.onlyChild()`](#bucketonlychild)
-    - [`bucket.eachLeafSeries()`](#bucketeachleafseries)
-    - [`bucket.serialize(map, reduce)`](#bucketserializemap-reduce)
-    - [`bucket.asyncTransform(asyncMap, asyncReduce)`](#bucketasynctransformasyncmap-asyncreduce)
-    - [`bucket.toJSON()`](#buckettojson)
-    - [`bucket.prettyPrint()`](#bucketprettyprint)
-    - [`bucket.tableSize()`](#buckettablesize)
-  - [Contribute](#contribute)
-  - [License](#license)
+- [Install](#install)
+- [Usage](#usage)
+  - [Example](#example)
+- [API](#api)
+  - [`bucket.put(key, value)`](#bucketputkey-value)
+  - [`bucket.get(key)`](#bucketgetkey)
+  - [`bucket.del(key)`](#bucketdelkey)
+  - [`bucket.leafCount()`](#bucketleafcount)
+  - [`bucket.childrenCount()`](#bucketchildrencount)
+  - [`bucket.onlyChild()`](#bucketonlychild)
+  - [`bucket.eachLeafSeries()`](#bucketeachleafseries)
+  - [`bucket.serialize(map, reduce)`](#bucketserializemap-reduce)
+  - [`bucket.asyncTransform(asyncMap, asyncReduce)`](#bucketasynctransformasyncmap-asyncreduce)
+  - [`bucket.toJSON()`](#buckettojson)
+  - [`bucket.prettyPrint()`](#bucketprettyprint)
+  - [`bucket.tableSize()`](#buckettablesize)
+- [Contribute](#contribute)
+- [License](#license)
 
 ## Install
 
