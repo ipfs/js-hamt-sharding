@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error
 import SparseArray from 'sparse-array'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import type { InfiniteHash } from './consumable-hash.js'
@@ -59,7 +59,7 @@ export class Bucket<T> {
   async get (key: string) {
     const child = await this._findChild(key)
 
-    if (child) {
+    if (child != null) {
       return child.value
     }
   }
@@ -68,7 +68,7 @@ export class Bucket<T> {
     const place = await this._findPlace(key)
     const child = place.bucket._at(place.pos)
 
-    if (child && child.key === key) {
+    if (child != null && child.key === key) {
       place.bucket._delAt(place.pos)
     }
   }
@@ -109,7 +109,7 @@ export class Bucket<T> {
     const acc: T[] = []
     // serialize to a custom non-sparse representation
     return reduce(this._children.reduce((acc, child, index) => {
-      if (child) {
+      if (child != null) {
         if (child instanceof Bucket) {
           acc.push(child.serialize(map, reduce))
         } else {
@@ -120,8 +120,8 @@ export class Bucket<T> {
     }, acc))
   }
 
-  asyncTransform (asyncMap: (value: BucketChild<T>) => Promise<T[]>, asyncReduce: (reduced: any) => Promise<any>) {
-    return asyncTransformBucket(this, asyncMap, asyncReduce)
+  async asyncTransform (asyncMap: (value: BucketChild<T>) => Promise<T[]>, asyncReduce: (reduced: any) => Promise<any>) {
+    return await asyncTransformBucket(this, asyncMap, asyncReduce)
   }
 
   toJSON () {
@@ -146,7 +146,7 @@ export class Bucket<T> {
       return undefined
     }
 
-    if (child && child.key === key) {
+    if (child != null && child.key === key) {
       return child
     }
   }
@@ -158,7 +158,7 @@ export class Bucket<T> {
     const child = this._children.get(index)
 
     if (child instanceof Bucket) {
-      return child._findPlace(hashValue)
+      return await child._findPlace(hashValue)
     }
 
     return {
@@ -172,7 +172,7 @@ export class Bucket<T> {
   async _findNewBucketAndPos (key: string | InfiniteHash): Promise<BucketPosition<T>> {
     const place = await this._findPlace(key)
 
-    if (place.existingChild && place.existingChild.key !== key) {
+    if ((place.existingChild != null) && place.existingChild.key !== key) {
       // conflict
       const bucket = new Bucket(this._options, place.bucket, place.pos)
       place.bucket._putObjectAt(place.pos, bucket)
@@ -181,7 +181,7 @@ export class Bucket<T> {
       const newPlace = await bucket._findPlace(place.existingChild.hash)
       newPlace.bucket._putAt(newPlace, place.existingChild.key, place.existingChild.value)
 
-      return bucket._findNewBucketAndPos(place.hash)
+      return await bucket._findNewBucketAndPos(place.hash)
     }
 
     // no conflict, we found the place
@@ -197,7 +197,7 @@ export class Bucket<T> {
   }
 
   _putObjectAt (pos: number, object: Bucket<T> | BucketChild<T>) {
-    if (!this._children.get(pos)) {
+    if (this._children.get(pos) == null) {
       this._popCount++
     }
     this._children.set(pos, object)
@@ -208,7 +208,7 @@ export class Bucket<T> {
       throw new Error('Invalid position')
     }
 
-    if (this._children.get(pos)) {
+    if (this._children.get(pos) != null) {
       this._popCount--
     }
     this._children.unset(pos)
@@ -216,12 +216,12 @@ export class Bucket<T> {
   }
 
   _level () {
-    if (this._parent && this._popCount <= 1) {
+    if (this._parent != null && this._popCount <= 1) {
       if (this._popCount === 1) {
         // remove myself from parent, replacing me with my only child
         const onlyChild = this._children.find(exists)
 
-        if (onlyChild && !(onlyChild instanceof Bucket)) {
+        if ((onlyChild != null) && !(onlyChild instanceof Bucket)) {
           const hash = onlyChild.hash
           hash.untake(this._options.bits)
           const place = {
@@ -270,5 +270,5 @@ async function asyncTransformBucket<T> (bucket: Bucket<T>, asyncMap: (value: Buc
     }
   }
 
-  return asyncReduce(output)
+  return await asyncReduce(output)
 }

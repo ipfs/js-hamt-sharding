@@ -8,12 +8,12 @@ interface UserBucketOptions {
 }
 
 export function createHAMT<T> (options: UserBucketOptions) {
-  if (!options || !options.hashFn) {
+  if (options == null || options.hashFn == null) {
     throw new Error('please define an options.hashFn')
   }
 
   const bucketOptions = {
-    bits: options.bits || 8,
+    bits: options.bits ?? 8,
     hash: wrapHash(options.hashFn)
   }
 
