@@ -1,3 +1,19 @@
+## [3.0.0](https://github.com/ipfs/js-hamt-sharding/compare/v2.0.1...v3.0.0) (2022-02-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* this module is ESM-only now
+
+### Bug Fixes
+
+* interface exports ([#6](https://github.com/ipfs/js-hamt-sharding/issues/6)) ([36396f0](https://github.com/ipfs/js-hamt-sharding/commit/36396f02c62cda238625d5b48a39ac2f70063415))
+
+
+### Trivial Changes
+
+* switch to unified CI ([#8](https://github.com/ipfs/js-hamt-sharding/issues/8)) ([dca4537](https://github.com/ipfs/js-hamt-sharding/commit/dca45372186c18a9d5fae1713fb978fd49b53c4d))
+
 ## [2.0.1](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v2.0.0...v2.0.1) (2021-08-23)
 
 
@@ -33,6 +49,3 @@
 ### Features
 
 * use async instead of callbacks ([2478d09](https://github.com/ipfs-shipyard/js-hamt-sharding/commit/2478d09))
-
-
-
