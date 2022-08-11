@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import { expect } from 'aegir/utils/chai.js'
+import { expect } from 'aegir/chai'
 
 import { ConsumableBuffer } from '../src/consumable-buffer.js'
 

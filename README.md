@@ -1,19 +1,14 @@
 # hamt-sharding <!-- omit in toc -->
 
-[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
-[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
-[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Build Status](https://github.com/ipfs/js-hamt-sharding/actions/workflows/js-test-and-release.yml/badge.svg?branch=main)](https://github.com/ipfs/js-hamt-sharding/actions/workflows/js-test-and-release.yml)
-[![Codecov](https://codecov.io/gh/ipfs-shipyard/js-hamt-sharding/branch/master/graph/badge.svg)](https://codecov.io/gh/ipfs-shipyard/js-hamt-sharding)
-[![Dependency Status](https://david-dm.org/ipfs-shipyard/js-hamt-sharding.svg?style=flat-square)](https://david-dm.org/ipfs/js-hamt-sharding)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
-![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
-![](https://img.shields.io/badge/Node.js-%3E%3D10.0.0-orange.svg?style=flat-square)
+[![ipfs.io](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io)
+[![IRC](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
+[![Discord](https://img.shields.io/discord/806902334369824788?style=flat-square)](https://discord.gg/ipfs)
+[![codecov](https://img.shields.io/codecov/c/github/ipfs/js-hamt-sharding.svg?style=flat-square)](https://codecov.io/gh/ipfs/js-hamt-sharding)
+[![CI](https://img.shields.io/github/workflow/status/ipfs/js-hamt-sharding/test%20&%20maybe%20release/master?style=flat-square)](https://github.com/ipfs/js-hamt-sharding/actions/workflows/js-test-and-release.yml)
 
-> JavaScript implementation of hamt for use in sharding
+> JavaScript implementation of sharding using hash array mapped tries
 
-## Table of Contents <!-- omit in toc -->
+## Table of contents <!-- omit in toc -->
 
 - [Install](#install)
 - [Usage](#usage)
@@ -33,11 +28,12 @@
   - [`bucket.tableSize()`](#buckettablesize)
 - [Contribute](#contribute)
 - [License](#license)
+- [Contribute](#contribute-1)
 
 ## Install
 
-```
-> npm install hamt-sharding
+```console
+$ npm i hamt-sharding
 ```
 
 ## Usage
@@ -131,6 +127,7 @@ console.info(bucket.childrenCount()) // 234 -- dependent on hashing algorithm
 ```
 
 ### `bucket.onlyChild()`
+
 ### `bucket.eachLeafSeries()`
 
 ```javascript
@@ -145,9 +142,13 @@ for await (const child of bucket.eachLeafSeries()) {
 ```
 
 ### `bucket.serialize(map, reduce)`
+
 ### `bucket.asyncTransform(asyncMap, asyncReduce)`
+
 ### `bucket.toJSON()`
+
 ### `bucket.prettyPrint()`
+
 ### `bucket.tableSize()`
 
 ## Contribute
@@ -160,4 +161,15 @@ This repository falls under the IPFS [Code of Conduct](https://github.com/ipfs/c
 
 ## License
 
-[MIT](LICENSE)
+Licensed under either of
+
+- Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
+
+## Contribute
+
+Feel free to join in. All welcome. Open an [issue](https://github.com/ipfs/js-ipfs-unixfs-importer/issues)!
+
+This repository falls under the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
+
+[![](https://cdn.rawgit.com/jbenet/contribute-ipfs-gif/master/img/contribute.gif)](https://github.com/ipfs/community/blob/master/CONTRIBUTING.md)
