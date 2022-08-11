@@ -1,3 +1,15 @@
+## [3.0.1](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.0...v3.0.1) (2022-08-11)
+
+
+### Trivial Changes
+
+* Update .github/workflows/stale.yml [skip ci] ([0c6fd46](https://github.com/ipfs/js-hamt-sharding/commit/0c6fd461c134c2134a54caccb052f0ac72d962a7))
+
+
+### Dependencies
+
+* update aegir to 37.x.x ([#32](https://github.com/ipfs/js-hamt-sharding/issues/32)) ([bec52e7](https://github.com/ipfs/js-hamt-sharding/commit/bec52e70f607d81d87a2e33f1dd92192ef6cc245))
+
 ## [3.0.0](https://github.com/ipfs/js-hamt-sharding/compare/v2.0.1...v3.0.0) (2022-02-21)
 
 
