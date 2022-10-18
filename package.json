@@ -144,7 +144,7 @@
   },
   "devDependencies": {
     "aegir": "^37.5.0",
-    "it-length": "^1.0.3",
+    "it-length": "^2.0.0",
     "multihashing-async": "^2.1.0"
   }
 }
