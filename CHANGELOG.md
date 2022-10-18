@@ -1,3 +1,16 @@
+## [3.0.2](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.1...v3.0.2) (2022-10-18)
+
+
+### Documentation
+
+* update readme ([#37](https://github.com/ipfs/js-hamt-sharding/issues/37)) ([c064fcc](https://github.com/ipfs/js-hamt-sharding/commit/c064fcc62fd744076ccd21eb029a7190c6385de1))
+
+
+### Dependencies
+
+* bump uint8arrays from 3.1.1 to 4.0.2 ([#35](https://github.com/ipfs/js-hamt-sharding/issues/35)) ([f8867d6](https://github.com/ipfs/js-hamt-sharding/commit/f8867d6bab93a0759717105a4318d8090f627721))
+* **dev:** bump it-length from 1.0.4 to 2.0.0 ([#36](https://github.com/ipfs/js-hamt-sharding/issues/36)) ([c844d7a](https://github.com/ipfs/js-hamt-sharding/commit/c844d7a5f31eefe8e871ea55e80117df9c10253a))
+
 ## [3.0.1](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.0...v3.0.1) (2022-08-11)
 
 
