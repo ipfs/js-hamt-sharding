@@ -1,41 +1,41 @@
 /* eslint-env mocha */
-import { expect } from 'aegir/utils/chai.js'
-import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-import * as murmur3128 from '@multiformats/murmur3/murmur128.js'
-import { wrapHash, InfiniteHash } from '../src/consumable-hash.js'
+import { expect } from "aegir/utils/chai.js"
+import { fromString as uint8ArrayFromString } from "uint8arrays/from-string"
+import * as murmur3128 from "@multiformats/murmur3/murmur128.js"
+import { wrapHash, InfiniteHash } from "../src/consumable-hash.js"
 
-describe('HAMT: consumable hash', () => {
-  const val = uint8ArrayFromString('some value')
+describe("HAMT: consumable hash", () => {
+  const val = uint8ArrayFromString("some value")
   let hash: (value: Uint8Array | InfiniteHash) => InfiniteHash
 
   beforeEach(() => {
     hash = wrapHash(hashFn)
   })
 
-  it('should refuse to hash a non String or buffer', () => {
+  it("should refuse to hash a non String or buffer", () => {
     try {
       // @ts-expect-error not a string or Uint8Array
       hash(1)
 
-      throw new Error('Should have refused to hash value')
+      throw new Error("Should have refused to hash value")
     } catch (err) {
-      expect(String(err)).to.include('can only hash Uint8Arrays')
+      expect(String(err)).to.include("can only hash Uint8Arrays")
     }
   })
 
-  it('can take a 0 length value', async () => {
+  it("can take a 0 length value", async () => {
     const result = await hash(val).take(0)
 
     expect(result).to.be.eql(0)
   })
 
-  it('can take a 10 bit value', async () => {
+  it("can take a 10 bit value", async () => {
     const result = await hash(val).take(10)
 
     expect(result).to.be.eql(721)
   })
 
-  it('can keep on taking a 10 bit value', async () => {
+  it("can keep on taking a 10 bit value", async () => {
     let iter = 100
     const h = hash(val)
 
@@ -48,7 +48,7 @@ describe('HAMT: consumable hash', () => {
     }
   })
 
-  it('can untake all', async () => {
+  it("can untake all", async () => {
     const h = hash(val)
 
     await h.take(10 * 100)
@@ -56,7 +56,7 @@ describe('HAMT: consumable hash', () => {
     h.untake(10 * 100)
   })
 
-  it('keeps taking the same values after untaking all', async () => {
+  it("keeps taking the same values after untaking all", async () => {
     let iter = 100
     const values = []
     const h = hash(val)
@@ -76,10 +76,19 @@ describe('HAMT: consumable hash', () => {
       iter--
     }
   })
+
+  it.only("generates expected hash", () => {
+    const digest = hash(val)
+    for (const n of [
+      180, 98, 135, 19, 161, 13, 6, 237, 129, 3, 220, 110, 63,
+    ]) {
+      expect(digest.take(8)).to.be.eql(n)
+    }
+  })
 })
 
 const hashFn = function (value: string | Uint8Array) {
-  const bytes = value instanceof Uint8Array ? value : uint8ArrayFromString(value)
+  const bytes =
+    value instanceof Uint8Array ? value : uint8ArrayFromString(value)
   return murmur3128.encode(bytes)
 }
-
