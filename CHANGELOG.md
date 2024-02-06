@@ -1,3 +1,19 @@
+## [3.0.3](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.2...v3.0.3) (2024-02-06)
+
+
+### Trivial Changes
+
+* add or force update .github/workflows/js-test-and-release.yml ([#61](https://github.com/ipfs/js-hamt-sharding/issues/61)) ([a993a1e](https://github.com/ipfs/js-hamt-sharding/commit/a993a1e5a3dc234b118a4a32974478d3ba632af9))
+* delete templates [skip ci] ([#60](https://github.com/ipfs/js-hamt-sharding/issues/60)) ([2d4bdc6](https://github.com/ipfs/js-hamt-sharding/commit/2d4bdc6fcc2965745974efe012ccf70c7bc8420d))
+* Update .github/workflows/stale.yml [skip ci] ([18629a9](https://github.com/ipfs/js-hamt-sharding/commit/18629a905a4dbbe9ca540ac576f2f1941f00b12f))
+* Update .github/workflows/stale.yml [skip ci] ([97305d6](https://github.com/ipfs/js-hamt-sharding/commit/97305d6ee50fc95f289e8cfae4154ee4847187d6))
+* Update .github/workflows/stale.yml [skip ci] ([12ec5c4](https://github.com/ipfs/js-hamt-sharding/commit/12ec5c47c44ec2e893415150f92ad7af63a48c02))
+
+
+### Dependencies
+
+* **dev:** bump it-length from 2.0.1 to 3.0.4 ([#62](https://github.com/ipfs/js-hamt-sharding/issues/62)) ([6fec868](https://github.com/ipfs/js-hamt-sharding/commit/6fec8685c5b04a4e6e22e5e56b7c424f2a8c7b14))
+
 ## [3.0.2](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.1...v3.0.2) (2022-10-18)
 
 
