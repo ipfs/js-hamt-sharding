@@ -1,6 +1,6 @@
 {
   "name": "hamt-sharding",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "JavaScript implementation of sharding using hash array mapped tries",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs-shipyard/js-hamt-sharding#readme",

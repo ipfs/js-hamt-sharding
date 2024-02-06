@@ -1,3 +1,10 @@
+## [3.0.5](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v3.0.4...v3.0.5) (2024-02-06)
+
+
+### Dependencies
+
+* bump uint8arrays from 4.0.10 to 5.0.1 ([#64](https://github.com/ipfs-shipyard/js-hamt-sharding/issues/64)) ([63d56e4](https://github.com/ipfs-shipyard/js-hamt-sharding/commit/63d56e4284a98238597694724f24dbe25f144581))
+
 ## [3.0.4](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v3.0.3...v3.0.4) (2024-02-06)
 
 
