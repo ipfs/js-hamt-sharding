@@ -1,7 +1,7 @@
 # hamt-sharding <!-- omit in toc -->
 
 [![codecov](https://img.shields.io/codecov/c/github/ipfs-shipyard/js-hamt-sharding.svg?style=flat-square)](https://codecov.io/gh/ipfs-shipyard/js-hamt-sharding)
-[![CI](https://img.shields.io/github/actions/workflow/status/ipfs-shipyard/js-hamt-sharding/js-test-and-release.yml?branch=master\&style=flat-square)](https://github.com/ipfs-shipyard/js-hamt-sharding/actions/workflows/js-test-and-release.yml?query=branch%3Amaster)
+[![CI](https://img.shields.io/github/actions/workflow/status/ipfs-shipyard/js-hamt-sharding/js-test-and-release.yml?branch=master\&style=flat-square)](https://github.com/ipfs/js-hamt-sharding/actions/workflows/js-test-and-release.yml?query=branch%3Amaster)
 
 > JavaScript implementation of sharding using hash array mapped tries
 
