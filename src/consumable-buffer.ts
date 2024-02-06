@@ -31,15 +31,15 @@ export class ConsumableBuffer {
     this._currentBitPos = 7
   }
 
-  availableBits () {
+  availableBits (): number {
     return this._currentBitPos + 1 + this._currentBytePos * 8
   }
 
-  totalBits () {
+  totalBits (): number {
     return this._value.length * 8
   }
 
-  take (bits: number) {
+  take (bits: number): number {
     let pendingBits = bits
     let result = 0
     while (pendingBits > 0 && this._haveBits()) {
@@ -61,7 +61,7 @@ export class ConsumableBuffer {
     return result
   }
 
-  untake (bits: number) {
+  untake (bits: number): void {
     this._currentBitPos += bits
     while (this._currentBitPos > 7) {
       this._currentBitPos -= 8
@@ -69,16 +69,16 @@ export class ConsumableBuffer {
     }
   }
 
-  _haveBits () {
+  _haveBits (): boolean {
     return this._currentBytePos >= 0
   }
 }
 
-function byteBitsToInt (byte: number, start: number, length: number) {
+function byteBitsToInt (byte: number, start: number, length: number): number {
   const mask = maskFor(start, length)
   return (byte & mask) >>> start
 }
 
-function maskFor (start: number, length: number) {
+function maskFor (start: number, length: number): number {
   return START_MASKS[start] & STOP_MASKS[Math.min(length + start - 1, 7)]
 }

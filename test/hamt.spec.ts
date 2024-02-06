@@ -1,20 +1,19 @@
 /* eslint-env mocha */
 import { expect } from 'aegir/chai'
+import length from 'it-length'
 import multihashing from 'multihashing-async'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-import length from 'it-length'
+import { createHAMT, type Bucket } from '../src/index.js'
 
-import { createHAMT, Bucket } from '../src/index.js'
-
-const hashFn = async function (value: string | Uint8Array) {
+const hashFn = async function (value: string | Uint8Array): Promise<Uint8Array> {
   const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
 
   // remove the multihash identifier
-  return multihash.slice(2)
+  return multihash.subarray(2)
 }
 
 const options = {
-  hashFn: hashFn
+  hashFn
 }
 
 describe('HAMT', () => {
@@ -122,7 +121,7 @@ describe('HAMT', () => {
     it('should return the first child', async () => {
       expect(bucket.leafCount()).to.eql(0)
 
-      expect(await bucket.onlyChild()).to.be.undefined()
+      expect(bucket.onlyChild()).to.be.undefined()
     })
 
     it('should iterate over children', async () => {
@@ -155,7 +154,7 @@ describe('HAMT', () => {
     it('accepts putting many keys in parallel', async () => {
       const keys = Array.from({ length: 400 }, (_, i) => i.toString())
 
-      await Promise.all(keys.map(async key => await bucket.put(key, key)))
+      await Promise.all(keys.map(async key => bucket.put(key, key)))
     })
 
     it('can remove all the keys and still find remaining', async function () {
@@ -201,14 +200,14 @@ describe('HAMT', () => {
       await insertKeys(400, bucket)
     })
 
-    async function smallHashFn (value: string | Uint8Array) {
+    async function smallHashFn (value: string | Uint8Array): Promise<Uint8Array> {
       const hash = await hashFn(value)
-      return hash.slice(0, 2) // just return the 2 first bytes of the hash
+      return hash.subarray(0, 2) // just return the 2 first bytes of the hash
     }
   })
 })
 
-async function insertKeys (count: number, bucket: Bucket<string>) {
+async function insertKeys (count: number, bucket: Bucket<string>): Promise<string[]> {
   const keys = Array.from({ length: count }, (_, i) => i.toString())
 
   for (const key of keys) {

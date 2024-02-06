@@ -1,6 +1,5 @@
 /* eslint-env mocha */
 import { expect } from 'aegir/chai'
-
 import { ConsumableBuffer } from '../src/consumable-buffer.js'
 
 describe('HAMT: consumable buffer', () => {
