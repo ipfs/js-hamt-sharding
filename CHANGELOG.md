@@ -1,3 +1,16 @@
+## [3.0.6](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.5...v3.0.6) (2024-02-06)
+
+
+### Trivial Changes
+
+* rename master to main ([4e780c0](https://github.com/ipfs/js-hamt-sharding/commit/4e780c0085d9f7c8120a1748c316385c16dff7e2))
+* update urls ([e2a5ccc](https://github.com/ipfs/js-hamt-sharding/commit/e2a5ccca109a6c70ab2093773ce00c829ccccb22))
+
+
+### Documentation
+
+* update readme ([16a17f3](https://github.com/ipfs/js-hamt-sharding/commit/16a17f32a7dec7b702a510e8dcba389002bad2f9))
+
 ## [3.0.5](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v3.0.4...v3.0.5) (2024-02-06)
 
 
