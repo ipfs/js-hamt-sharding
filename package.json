@@ -148,5 +148,6 @@
     "aegir": "^42.2.3",
     "it-length": "^3.0.4",
     "multihashing-async": "^2.1.0"
-  }
+  },
+  "sideEffects": false
 }
