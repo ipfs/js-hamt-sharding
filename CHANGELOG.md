@@ -1,3 +1,10 @@
+## [3.0.4](https://github.com/ipfs-shipyard/js-hamt-sharding/compare/v3.0.3...v3.0.4) (2024-02-06)
+
+
+### Dependencies
+
+* **dev:** bump aegir from 37.12.1 to 42.2.3 ([#63](https://github.com/ipfs-shipyard/js-hamt-sharding/issues/63)) ([f4a59e9](https://github.com/ipfs-shipyard/js-hamt-sharding/commit/f4a59e994637b149da1f676814b98bf13a1e5a54))
+
 ## [3.0.3](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.2...v3.0.3) (2024-02-06)
 
 
