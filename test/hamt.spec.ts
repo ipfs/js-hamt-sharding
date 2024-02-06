@@ -130,7 +130,7 @@ describe('HAMT', () => {
       // insert enough keys to cause multiple buckets to be created
       await insertKeys(expectedCount, bucket)
 
-      const childCount = await length(bucket.eachLeafSeries())
+      const childCount = length(bucket.eachLeafSeries())
 
       expect(childCount).to.equal(expectedCount)
     })
