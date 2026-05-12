@@ -1,3 +1,13 @@
+## [3.0.8](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.7...v3.0.8) (2026-05-12)
+
+### Bug Fixes
+
+* remove lockfile ([#76](https://github.com/ipfs/js-hamt-sharding/issues/76)) ([29b9139](https://github.com/ipfs/js-hamt-sharding/commit/29b9139e4852de13cbdeb8ad8e385a4120e95375))
+
+### Dependencies
+
+* update uint8arrays ([#75](https://github.com/ipfs/js-hamt-sharding/issues/75)) ([c2099ea](https://github.com/ipfs/js-hamt-sharding/commit/c2099ea12ed0e29ad3d38285d36bc5095c1f0b81))
+
 ## [3.0.7](https://github.com/ipfs/js-hamt-sharding/compare/v3.0.6...v3.0.7) (2026-05-12)
 
 ### Trivial Changes
