@@ -30,9 +30,9 @@
  * ```
  */
 
-import { Bucket } from './bucket.js'
-import { wrapHash } from './consumable-hash.js'
-import type { BucketOptions, BucketPosition, BucketChild } from './bucket.js'
+import { Bucket } from './bucket.ts'
+import { wrapHash } from './consumable-hash.ts'
+import type { BucketOptions, BucketPosition, BucketChild } from './bucket.ts'
 
 interface UserBucketOptions {
   hashFn(value: Uint8Array): Promise<Uint8Array>

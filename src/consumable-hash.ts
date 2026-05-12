@@ -1,5 +1,5 @@
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
-import { ConsumableBuffer } from './consumable-buffer.js'
+import { ConsumableBuffer } from './consumable-buffer.ts'
 
 export function wrapHash (hashFn: (value: Uint8Array) => Promise<Uint8Array>): (value: InfiniteHash | Uint8Array) => InfiniteHash {
   function hashing (value: InfiniteHash | Uint8Array): InfiniteHash {

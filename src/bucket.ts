@@ -1,7 +1,7 @@
 // @ts-expect-error no types
 import SparseArray from 'sparse-array'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-import type { InfiniteHash } from './consumable-hash.js'
+import type { InfiniteHash } from './consumable-hash.ts'
 
 export interface BucketChild<V> {
   key: string

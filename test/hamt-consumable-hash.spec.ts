@@ -1,8 +1,8 @@
-/* eslint-env mocha */
 import { expect } from 'aegir/chai'
 import multihashing from 'multihashing-async'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-import { wrapHash, type InfiniteHash } from '../src/consumable-hash.js'
+import { wrapHash } from '../src/consumable-hash.ts'
+import type { InfiniteHash } from '../src/consumable-hash.ts'
 
 describe('HAMT: consumable hash', () => {
   const val = uint8ArrayFromString('some value')

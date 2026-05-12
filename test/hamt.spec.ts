@@ -1,9 +1,9 @@
-/* eslint-env mocha */
 import { expect } from 'aegir/chai'
 import length from 'it-length'
 import multihashing from 'multihashing-async'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-import { createHAMT, type Bucket } from '../src/index.js'
+import { createHAMT } from '../src/index.ts'
+import type { Bucket } from '../src/index.ts'
 
 const hashFn = async function (value: string | Uint8Array): Promise<Uint8Array> {
   const multihash = await multihashing(value instanceof Uint8Array ? value : uint8ArrayFromString(value), 'sha2-256')
