@@ -1,6 +1,5 @@
-/* eslint-env mocha */
 import { expect } from 'aegir/chai'
-import { ConsumableBuffer } from '../src/consumable-buffer.js'
+import { ConsumableBuffer } from '../src/consumable-buffer.ts'
 
 describe('HAMT: consumable buffer', () => {
   let buf: ConsumableBuffer

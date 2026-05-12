@@ -31,7 +31,8 @@
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
+      "import": "./dist/src/index.js",
+      "module-sync": "./dist/src/index.js"
     }
   },
   "eslintConfig": {
@@ -145,7 +146,7 @@
     "uint8arrays": "^5.0.1"
   },
   "devDependencies": {
-    "aegir": "^47.0.26",
+    "aegir": "^48.0.4",
     "it-length": "^3.0.4",
     "multihashing-async": "^2.1.0"
   },

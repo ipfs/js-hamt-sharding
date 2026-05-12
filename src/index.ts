@@ -30,16 +30,19 @@
  * ```
  */
 
-import { Bucket } from './bucket.js'
-import { wrapHash } from './consumable-hash.js'
-import type { BucketOptions, BucketPosition, BucketChild } from './bucket.js'
+import { Bucket } from './bucket.ts'
+import { wrapHash } from './consumable-hash.ts'
+import type { BucketPosition, BucketChild } from './bucket.ts'
 
-interface UserBucketOptions {
+export type { ConsumableBuffer } from './consumable-buffer.ts'
+export type { InfiniteHash } from './consumable-hash.ts'
+
+export interface BucketOptions {
   hashFn(value: Uint8Array): Promise<Uint8Array>
   bits?: number
 }
 
-export function createHAMT<T> (options: UserBucketOptions): Bucket<T> {
+export function createHAMT<T> (options: BucketOptions): Bucket<T> {
   if (options == null || options.hashFn == null) {
     throw new Error('please define an options.hashFn')
   }
@@ -53,4 +56,4 @@ export function createHAMT<T> (options: UserBucketOptions): Bucket<T> {
 }
 
 export { Bucket }
-export type { BucketOptions, BucketPosition, BucketChild }
+export type { BucketPosition, BucketChild }
